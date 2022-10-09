@@ -80,10 +80,38 @@ Discounted prices：4.00(yuan)
       }
    ]
    ```
-
 # Practice Requirement
 
 1. Please draw the whole tasking diagram.
+   
+```mermaid
+graph LR
+   
+   client -- "items: [string[]]" --> printReceipt
+   printReceipt -- "[string]" --> client
+   
+   printReceipt -- "items: [string[]]" --> convertShoppingCartItems
+   convertShoppingCartItems -- "shoppingCartItems: [ShoppingCartItem[]]" --> printReceipt
+
+   printReceipt -- "shoppingCartItems: [ShoppingCartItem[]]" --> printItemList
+   printItemList -- "[string]" --> printReceipt
+   
+   convertShoppingCartItems -- "item: [string[]]" --> groupingItems
+   groupingItems -- "barcodeQuantityMap: [{key: barcode, value: quantity}]" --> convertShoppingCartItems
+   
+   convertShoppingCartItems -- "barcode: [string]" --> getItem
+   getItem -- "item: [Item]" --> convertShoppingCartItems
+   
+   convertShoppingCartItems -- "item: [Item], tag: [number]" --> toShoppingCartItem
+   toShoppingCartItem -- "shoppingCartItem: [ShoppingCartItem]" --> convertShoppingCartItems
+   
+   convertShoppingCartItems -- "shoppingCartItem: [ShoppingCartItem]" --> calculatePromotions
+   calculatePromotions -- "shoppingCartItem: [ShoppingCartItem]" --> convertShoppingCartItems
+   
+   printReceipt -- "shoppingCartItems: [ShoppingCartItem[]]" --> printTotalContent
+   printTotalContent -- "[string]" --> printReceipt
+  
+```
 2. Please declare all the functions according to your diagram.
 3. Please write a test case following given...when...then pattern for a leaf
    block of the diagram. Then implement the block to pass the test.
