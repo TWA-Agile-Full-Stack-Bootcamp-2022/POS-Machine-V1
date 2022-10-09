@@ -69,7 +69,16 @@ function formatUnit(unit: string, quantity: number) {
 }
 
 export function printItemList(shoppingCartItems: ShoppingCartItem[]) {
-    return shoppingCartItems.map(s =>
+    const list = shoppingCartItems.map(s =>
         `name：${s.name}，Quantity：${s.quantity} ${formatUnit(s.unit, s.quantity)}，Unit：${(toFixedNumber(s.unitPrice))}(yuan)，Subtotal：${getSubtotalPrice(s)}(yuan)`)
         .join("\n")
+
+    return `***<store earning no money>Receipt ***\n${list}`
+}
+
+export function printTotalContents(shoppingCartItems: ShoppingCartItem[]) {
+    return `----------------------
+Total：58.50(yuan)
+Discounted prices：7.50(yuan)
+**********************`;
 }

@@ -1,4 +1,11 @@
-import { calculatePromotions, getItem, groupingItems, printItemList, printReceipt } from '../src/PrintReceipt'
+import {
+    calculatePromotions,
+    getItem,
+    groupingItems,
+    printItemList,
+    printReceipt,
+    printTotalContents
+} from '../src/PrintReceipt'
 import { ShoppingCartItem } from "../src/ShoppingCartItem";
 import { Item } from "../src/Item";
 // * task 1: should get barcode with quantity map when grouping items given input list
@@ -158,8 +165,35 @@ Discounted prices：7.50(yuan)
         }];
 
         const list: string = printItemList(shoppingCartItems)
-        expect(list).toEqual("name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)\n" +
+        expect(list).toEqual("***<store earning no money>Receipt ***\nname：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)\n" +
             "name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)")
+    })
+
+
+    it('should get shopping cart items total contents when printTotalContent given shopping cart items', () => {
+        const shoppingCartItems: ShoppingCartItem[] = [{
+            barcode: 'ITEM000001',
+            name: 'Sprite',
+            unit: 'bottle',
+            unitPrice: 3.00,
+            quantity: 5,
+            totalPrice: 15,
+            discountPrice: 3
+        }, {
+            barcode: 'ITEM000003',
+            name: 'Litchi',
+            unit: 'pound',
+            unitPrice: 15.00,
+            quantity: 2.5,
+            totalPrice: 37.5,
+            discountPrice: 0
+        }];
+
+        const contents: string = printTotalContents(shoppingCartItems)
+        expect(contents).toEqual(`----------------------
+Total：58.50(yuan)
+Discounted prices：7.50(yuan)
+**********************`)
     })
 
 })
