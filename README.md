@@ -80,6 +80,19 @@ Discounted prices：4.00(yuan)
       }
    ]
    ```
+
+### tasking
+* task 1: should get barcode with quantity map when grouping items given input list
+* task 2: should return item entity when item exists given item barcode
+* ~~task 2-1: should throw exception when item ?~~
+* task 3: should get ShoppingCartItem total price equals unit price * 2 when toShoppingCartItem given item entity and quantity is 2
+* task 4: should get ShoppingCartItem total price equals unit price * 1 when toShoppingCartItem given item entity and quantity is null
+* task 5: should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 3
+* task 6: should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 2
+* task 7: should get shopping cart items string when printItemList given shopping cart list 
+* task 8: should get shopping cart items total contents when printTotalContent given shopping cart items 
+* task 9: should print list contents successful when printReceipt given input list
+
 # Practice Requirement
 
 1. Please draw the whole tasking diagram.
