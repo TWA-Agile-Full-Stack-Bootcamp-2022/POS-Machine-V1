@@ -1,11 +1,11 @@
-import { getItem, groupingItems, printReceipt } from '../src/PrintReceipt'
+import { calculatePromotions, getItem, groupingItems, printReceipt } from '../src/PrintReceipt'
 import { ShoppingCartItem } from "../src/ShoppingCartItem";
 import { Item } from "../src/Item";
 // * task 1: should get barcode with quantity map when grouping items given input list
 // * task 2: should return item entity when item exists given item barcode
 // * ~~task 2-1: should throw exception when item ?~~
 // * task 3: should get ShoppingCartItem total price equals unit price * 2 when toShoppingCartItem given item entity and quantity is 2
-// * task 4: should get ShoppingCartItem total price equals unit price * 1 when toShoppingCartItem given item entity and quantity is null
+// *** task 4: should get ShoppingCartItem total price equals unit price * 1 when toShoppingCartItem given item entity and quantity is null ***
 // * task 5: should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 3
 // * task 6: should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 2
 // * task 7: should get shopping cart items string when printItemList given shopping cart list
@@ -95,6 +95,28 @@ Discounted prices：7.50(yuan)
     expect(shoppingCartItem.quantity).toEqual(quantity)
     expect(shoppingCartItem.unitPrice).toEqual(item.price)
     expect(shoppingCartItem.totalPrice).toEqual(item.price * 3)
+  })
+
+
+
+  it('should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 3', () => {
+    const shoppingCartItem: ShoppingCartItem = {
+      barcode: 'ITEM000001',
+      name: 'Sprite',
+      unit: 'bottle',
+      unitPrice: 3.00,
+      quantity: 3,
+      totalPrice: 9
+    };
+
+    const cartItem: ShoppingCartItem = calculatePromotions(shoppingCartItem)
+    expect(cartItem.barcode).toEqual(shoppingCartItem.barcode)
+    expect(cartItem.name).toEqual(shoppingCartItem.name)
+    expect(cartItem.unit).toEqual(shoppingCartItem.unit)
+    expect(cartItem.quantity).toEqual(shoppingCartItem.quantity)
+    expect(cartItem.unitPrice).toEqual(shoppingCartItem.unitPrice)
+    expect(cartItem.totalPrice).toEqual(shoppingCartItem.unitPrice * 3)
+    expect(cartItem.discountPrice).toEqual(shoppingCartItem.unitPrice)
   })
 
 })

@@ -5,4 +5,5 @@ export interface ShoppingCartItem {
     quantity: number
     unitPrice: number
     totalPrice: number
+    discountPrice?: number
 }
