@@ -48,7 +48,7 @@ function getPromotions(shoppingCartItem: ShoppingCartItem) {
 export function calculatePromotions(shoppingCartItem: ShoppingCartItem) {
     const promotions = getPromotions(shoppingCartItem);
     if (promotions.indexOf('BUY_TWO_GET_ONE_FREE') !== -1) {
-        shoppingCartItem.discountPrice = Math.round(shoppingCartItem.quantity / 3) * shoppingCartItem.unitPrice
+        shoppingCartItem.discountPrice = Math.trunc(shoppingCartItem.quantity / 3) * shoppingCartItem.unitPrice
     }
     return shoppingCartItem
 }

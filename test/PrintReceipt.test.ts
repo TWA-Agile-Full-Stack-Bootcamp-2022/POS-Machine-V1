@@ -99,7 +99,7 @@ Discounted prices：7.50(yuan)
 
 
 
-  it('should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 3', () => {
+  it('should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 2', () => {
     const shoppingCartItem: ShoppingCartItem = {
       barcode: 'ITEM000001',
       name: 'Sprite',
@@ -117,6 +117,26 @@ Discounted prices：7.50(yuan)
     expect(cartItem.unitPrice).toEqual(shoppingCartItem.unitPrice)
     expect(cartItem.totalPrice).toEqual(shoppingCartItem.unitPrice * 3)
     expect(cartItem.discountPrice).toEqual(shoppingCartItem.unitPrice)
+  })
+
+  it('should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 2', () => {
+    const shoppingCartItem: ShoppingCartItem = {
+      barcode: 'ITEM000001',
+      name: 'Sprite',
+      unit: 'bottle',
+      unitPrice: 3.00,
+      quantity: 2,
+      totalPrice: 6
+    };
+
+    const cartItem: ShoppingCartItem = calculatePromotions(shoppingCartItem)
+    expect(cartItem.barcode).toEqual(shoppingCartItem.barcode)
+    expect(cartItem.name).toEqual(shoppingCartItem.name)
+    expect(cartItem.unit).toEqual(shoppingCartItem.unit)
+    expect(cartItem.quantity).toEqual(shoppingCartItem.quantity)
+    expect(cartItem.unitPrice).toEqual(shoppingCartItem.unitPrice)
+    expect(cartItem.totalPrice).toEqual(shoppingCartItem.unitPrice * 2)
+    expect(cartItem.discountPrice).toEqual(0)
   })
 
 })
