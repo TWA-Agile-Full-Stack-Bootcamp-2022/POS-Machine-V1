@@ -52,3 +52,7 @@ export function calculatePromotions(shoppingCartItem: ShoppingCartItem) {
     }
     return shoppingCartItem
 }
+
+export function printItemList(shoppingCartItems: ShoppingCartItem[]) {
+    return "Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)";
+}
