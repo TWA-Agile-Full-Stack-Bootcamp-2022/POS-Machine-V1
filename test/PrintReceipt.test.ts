@@ -1,4 +1,4 @@
-import { groupingItems, printReceipt } from '../src/PrintReceipt'
+import { getItem, groupingItems, printReceipt } from '../src/PrintReceipt'
 // * task 1: should get barcode with quantity map when grouping items given input list
 // * task 2: should return item entity when item exists given item barcode
 // * ~~task 2-1: should throw exception when item ?~~
@@ -53,5 +53,16 @@ Discounted prices：7.50(yuan)
       ['ITEM000003', 2.5],
       ['ITEM000005', 3],
     ]))
+  })
+
+  it('should return item entity when item exists given item barcode', () => {
+    const barcode = 'ITEM000001'
+
+    expect(getItem(barcode)).toEqual( {
+      barcode: 'ITEM000001',
+      name: 'Sprite',
+      unit: 'bottle',
+      price: 3.00
+    })
   })
 })

@@ -1,4 +1,4 @@
-import {loadAllItems, loadPromotions} from './Dependencies'
+import { loadAllItems } from "./Dependencies";
 
 export function printReceipt(tags: string[]): string {
   return `***<store earning no money>Receipt ***
@@ -32,4 +32,8 @@ export function groupingItems(tags: string[]) {
     }
     return a;
   }, new Map());
+}
+
+export function getItem(barcode: string) {
+  return loadAllItems().find(element => element.barcode === barcode);
 }
