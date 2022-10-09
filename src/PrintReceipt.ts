@@ -53,6 +53,23 @@ export function calculatePromotions(shoppingCartItem: ShoppingCartItem) {
     return shoppingCartItem
 }
 
+function getSubtotalPrice(s: ShoppingCartItem) {
+    return toFixedNumber(s.totalPrice - (s.discountPrice || 0));
+}
+
+function toFixedNumber(num: number) {
+    return num.toFixed(2);
+}
+
+function formatUnit(unit: string, quantity: number) {
+    if(quantity > 1) {
+        return `${unit}s`
+    }
+    return unit
+}
+
 export function printItemList(shoppingCartItems: ShoppingCartItem[]) {
-    return "Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)";
+    return shoppingCartItems.map(s =>
+        `name：${s.name}，Quantity：${s.quantity} ${formatUnit(s.unit, s.quantity)}，Unit：${(toFixedNumber(s.unitPrice))}(yuan)，Subtotal：${getSubtotalPrice(s)}(yuan)`)
+        .join("\n")
 }
