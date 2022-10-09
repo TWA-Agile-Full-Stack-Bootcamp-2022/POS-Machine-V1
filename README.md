@@ -81,9 +81,50 @@ Discounted prices：4.00(yuan)
    ]
    ```
 
+### tasking
+* task 1: should get barcode with quantity map when grouping items given input list
+* task 2: should return item entity when item exists given item barcode
+* ~~task 2-1: should throw exception when item ?~~
+* task 3: should get ShoppingCartItem total price equals unit price * 2 when toShoppingCartItem given item entity and quantity is 2
+* task 4: should get ShoppingCartItem total price equals unit price * 1 when toShoppingCartItem given item entity and quantity is null
+* task 5: should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 3
+* task 6: should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 2
+* task 7: should get shopping cart items string when printItemList given shopping cart list 
+* task 8: should get shopping cart items total contents when printTotalContent given shopping cart items 
+* task 9: should print list contents successful when printReceipt given input list
+
 # Practice Requirement
 
 1. Please draw the whole tasking diagram.
+   
+```mermaid
+graph LR
+   
+   client -- "items: [string[]]" --> printReceipt
+   printReceipt -- "[string]" --> client
+   
+   printReceipt -- "items: [string[]]" --> convertShoppingCartItems
+   convertShoppingCartItems -- "shoppingCartItems: [ShoppingCartItem[]]" --> printReceipt
+
+   printReceipt -- "shoppingCartItems: [ShoppingCartItem[]]" --> printItemList
+   printItemList -- "[string]" --> printReceipt
+   
+   convertShoppingCartItems -- "item: [string[]]" --> groupingItems
+   groupingItems -- "barcodeQuantityMap: [{key: barcode, value: quantity}]" --> convertShoppingCartItems
+   
+   convertShoppingCartItems -- "barcode: [string]" --> getItem
+   getItem -- "item: [Item]" --> convertShoppingCartItems
+   
+   convertShoppingCartItems -- "item: [Item], tag: [number]" --> toShoppingCartItem
+   toShoppingCartItem -- "shoppingCartItem: [ShoppingCartItem]" --> convertShoppingCartItems
+   
+   convertShoppingCartItems -- "shoppingCartItem: [ShoppingCartItem]" --> calculatePromotions
+   calculatePromotions -- "shoppingCartItem: [ShoppingCartItem]" --> convertShoppingCartItems
+   
+   printReceipt -- "shoppingCartItems: [ShoppingCartItem[]]" --> printTotalContent
+   printTotalContent -- "[string]" --> printReceipt
+  
+```
 2. Please declare all the functions according to your diagram.
 3. Please write a test case following given...when...then pattern for a leaf
    block of the diagram. Then implement the block to pass the test.
