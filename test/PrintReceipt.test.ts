@@ -1,4 +1,6 @@
 import { getItem, groupingItems, printReceipt } from '../src/PrintReceipt'
+import { ShoppingCartItem } from "../src/ShoppingCartItem";
+import { Item } from "../src/Item";
 // * task 1: should get barcode with quantity map when grouping items given input list
 // * task 2: should return item entity when item exists given item barcode
 // * ~~task 2-1: should throw exception when item ?~~
@@ -10,6 +12,17 @@ import { getItem, groupingItems, printReceipt } from '../src/PrintReceipt'
 // * task 8: should get shopping cart items total contents when printTotalContent given shopping cart items
 // * task 9: should print list contents successful when printReceipt given input list
 
+
+function toShoppingCartItem(item: Item, quantity: number) {
+  const shoppingCartItem = {} as ShoppingCartItem;
+  shoppingCartItem.name = item.name
+  shoppingCartItem.barcode = item.barcode
+  shoppingCartItem.unit = item.unit
+  shoppingCartItem.unitPrice = item.price
+  shoppingCartItem.quantity = quantity
+  shoppingCartItem.totalPrice = item.price * quantity
+  return shoppingCartItem;
+}
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -65,4 +78,23 @@ Discounted prices：7.50(yuan)
       price: 3.00
     })
   })
+
+  it('should get ShoppingCartItem total price equals unit price * 2 when toShoppingCartItem given item entity and quantity is 2', () => {
+    const item = {
+      barcode: 'ITEM000001',
+      name: 'Sprite',
+      unit: 'bottle',
+      price: 3.00
+    }
+    const quantity = 3;
+
+    const shoppingCartItem: ShoppingCartItem = toShoppingCartItem(item, quantity)
+    expect(shoppingCartItem.barcode).toEqual(item.barcode)
+    expect(shoppingCartItem.name).toEqual(item.name)
+    expect(shoppingCartItem.unit).toEqual(item.unit)
+    expect(shoppingCartItem.quantity).toEqual(quantity)
+    expect(shoppingCartItem.unitPrice).toEqual(item.price)
+    expect(shoppingCartItem.totalPrice).toEqual(item.price * 3)
+  })
+
 })
