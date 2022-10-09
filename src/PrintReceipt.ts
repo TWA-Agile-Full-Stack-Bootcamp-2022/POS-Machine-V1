@@ -1,15 +1,14 @@
 import { loadAllItems, loadPromotions } from "./Dependencies";
 import { ShoppingCartItem } from "./ShoppingCartItem";
+import { Item } from "./Item";
 
 export function printReceipt(tags: string[]): string {
-    return `***<store earning no money>Receipt ***
-Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
-Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)
-Name：Instant Noodles，Quantity：3 bags，Unit：4.50(yuan)，Subtotal：9.00(yuan)
-----------------------
-Total：58.50(yuan)
-Discounted prices：7.50(yuan)
-**********************`
+    const itemsMap = groupingItems(tags);
+    const shoppingCartItems = Array.from(itemsMap.keys())
+        .map(getItem)
+        .map((item: Item) => toShoppingCartItem(item, itemsMap.get(item.barcode)))
+        .map(calculatePromotions);
+    return printItemList(shoppingCartItems) + '\n'+ printTotalContents(shoppingCartItems);
 }
 
 function getQuantity(quantityString: string) {
@@ -35,8 +34,12 @@ export function groupingItems(tags: string[]) {
     }, new Map());
 }
 
-export function getItem(barcode: string) {
-    return loadAllItems().find(element => element.barcode === barcode);
+export function getItem(barcode: string): Item {
+    const item = loadAllItems().find(element => element.barcode === barcode);
+    if (!item) {
+        throw new Error(`not found barcode ${barcode}`);
+    }
+    return item
 }
 
 function getPromotions(shoppingCartItem: ShoppingCartItem) {
@@ -70,15 +73,29 @@ function formatUnit(unit: string, quantity: number) {
 
 export function printItemList(shoppingCartItems: ShoppingCartItem[]) {
     const list = shoppingCartItems.map(s =>
-        `name：${s.name}，Quantity：${s.quantity} ${formatUnit(s.unit, s.quantity)}，Unit：${(toFixedNumber(s.unitPrice))}(yuan)，Subtotal：${getSubtotalPrice(s)}(yuan)`)
+        `Name：${s.name}，Quantity：${s.quantity} ${formatUnit(s.unit, s.quantity)}，Unit：${(toFixedNumber(s.unitPrice))}(yuan)，Subtotal：${getSubtotalPrice(s)}(yuan)`)
         .join("\n")
 
     return `***<store earning no money>Receipt ***\n${list}`
 }
 
+function sumSubtotalPrice(shoppingCartItems: ShoppingCartItem[]) {
+    return toFixedNumber(shoppingCartItems.reduce(
+        (a, b) => a + (b.totalPrice - b.discountPrice), 0));
+}
+
+function sumDiscountPrice(shoppingCartItems: ShoppingCartItem[]) {
+    return toFixedNumber(shoppingCartItems.reduce(
+        (a, b) => a + b.discountPrice, 0));
+}
+
 export function printTotalContents(shoppingCartItems: ShoppingCartItem[]) {
     return `----------------------
-Total：58.50(yuan)
-Discounted prices：7.50(yuan)
+Total：${(sumSubtotalPrice(shoppingCartItems))}(yuan)
+Discounted prices：${(sumDiscountPrice(shoppingCartItems))}(yuan)
 **********************`;
+}
+
+export function toShoppingCartItem(item: Item, quantity: number) {
+    return new ShoppingCartItem(item.barcode, item.name, item.unit, item.price, quantity, item.price * quantity);
 }

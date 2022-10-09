@@ -4,10 +4,10 @@ import {
     groupingItems,
     printItemList,
     printReceipt,
-    printTotalContents
+    printTotalContents,
+    toShoppingCartItem
 } from '../src/PrintReceipt'
 import { ShoppingCartItem } from "../src/ShoppingCartItem";
-import { Item } from "../src/Item";
 // * task 1: should get barcode with quantity map when grouping items given input list
 // * task 2: should return item entity when item exists given item barcode
 // * ~~task 2-1: should throw exception when item ?~~
@@ -19,17 +19,6 @@ import { Item } from "../src/Item";
 // * task 8: should get shopping cart items total contents when printTotalContent given shopping cart items
 // * task 9: should print list contents successful when printReceipt given input list
 
-
-function toShoppingCartItem(item: Item, quantity: number) {
-    const shoppingCartItem = {} as ShoppingCartItem;
-    shoppingCartItem.name = item.name
-    shoppingCartItem.barcode = item.barcode
-    shoppingCartItem.unit = item.unit
-    shoppingCartItem.unitPrice = item.price
-    shoppingCartItem.quantity = quantity
-    shoppingCartItem.totalPrice = item.price * quantity
-    return shoppingCartItem;
-}
 
 describe('printReceipt', () => {
     it('should print receipt with promotion when print receipt', () => {
@@ -105,15 +94,15 @@ Discounted prices：7.50(yuan)
     })
 
 
-    it('should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 2', () => {
-        const shoppingCartItem: ShoppingCartItem = {
-            barcode: 'ITEM000001',
-            name: 'Sprite',
-            unit: 'bottle',
-            unitPrice: 3.00,
-            quantity: 3,
-            totalPrice: 9
-        };
+    it('should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 3', () => {
+        const shoppingCartItem: ShoppingCartItem = new ShoppingCartItem(
+            'ITEM000001',
+            'Sprite',
+            'bottle',
+            3.00,
+            3,
+            9
+        );
 
         const cartItem: ShoppingCartItem = calculatePromotions(shoppingCartItem)
         expect(cartItem.barcode).toEqual(shoppingCartItem.barcode)
@@ -126,15 +115,14 @@ Discounted prices：7.50(yuan)
     })
 
     it('should get ShoppingCartItem subtotal unit price * 2 when calculatePromotions given item with BUY_TWO_GET_ONE_FREE type quantity is 2', () => {
-        const shoppingCartItem: ShoppingCartItem = {
-            barcode: 'ITEM000001',
-            name: 'Sprite',
-            unit: 'bottle',
-            unitPrice: 3.00,
-            quantity: 2,
-            totalPrice: 6
-        };
-
+        const shoppingCartItem: ShoppingCartItem = new ShoppingCartItem(
+            'ITEM000001',
+            'Sprite',
+            'bottle',
+            3.00,
+            2,
+            6
+        );
         const cartItem: ShoppingCartItem = calculatePromotions(shoppingCartItem)
         expect(cartItem.barcode).toEqual(shoppingCartItem.barcode)
         expect(cartItem.name).toEqual(shoppingCartItem.name)
@@ -154,7 +142,7 @@ Discounted prices：7.50(yuan)
             quantity: 5,
             totalPrice: 15,
             discountPrice: 3
-        }, {
+        } as ShoppingCartItem, {
             barcode: 'ITEM000003',
             name: 'Litchi',
             unit: 'pound',
@@ -162,13 +150,13 @@ Discounted prices：7.50(yuan)
             quantity: 2.5,
             totalPrice: 37.5,
             discountPrice: 0
-        }];
+        } as ShoppingCartItem];
 
         const list: string = printItemList(shoppingCartItems)
-        expect(list).toEqual("***<store earning no money>Receipt ***\nname：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)\n" +
-            "name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)")
+        expect(list).toEqual(`***<store earning no money>Receipt ***
+Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
+Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)`)
     })
-
 
     it('should get shopping cart items total contents when printTotalContent given shopping cart items', () => {
         const shoppingCartItems: ShoppingCartItem[] = [{
@@ -179,7 +167,7 @@ Discounted prices：7.50(yuan)
             quantity: 5,
             totalPrice: 15,
             discountPrice: 3
-        }, {
+        } as ShoppingCartItem, {
             barcode: 'ITEM000003',
             name: 'Litchi',
             unit: 'pound',
@@ -187,7 +175,15 @@ Discounted prices：7.50(yuan)
             quantity: 2.5,
             totalPrice: 37.5,
             discountPrice: 0
-        }];
+        } as ShoppingCartItem, {
+            barcode: 'ITEM000005',
+            name: 'Instant Noodles',
+            unit: 'bag',
+            unitPrice: 4.50,
+            quantity: 3,
+            totalPrice: 13.5,
+            discountPrice: 4.5
+        } as ShoppingCartItem];
 
         const contents: string = printTotalContents(shoppingCartItems)
         expect(contents).toEqual(`----------------------
