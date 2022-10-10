@@ -18,6 +18,10 @@ function renderTitle(receipt: string) {
   return receipt
 }
 
+function calculateSubtotal(product: { unit: string; price: number; name: string; barcode: string }, qty: number) {
+  return product.price * qty
+}
+
 function renderRow(tag: string, productMap: Map<string, { unit: string; price: number; name: string; barcode: string }>, receipt: string) {
   const tagInfo = tag.split('-')
   const product = productMap.get(tagInfo[0])
@@ -26,7 +30,7 @@ function renderRow(tag: string, productMap: Map<string, { unit: string; price: n
     throw new Error('error item')
   }
   receipt += '\n'
-  receipt += renderRowReceipt(product, qty, product.price * qty)
+  receipt += renderRowReceipt(product, qty, calculateSubtotal(product, qty))
   return receipt
 }
 
