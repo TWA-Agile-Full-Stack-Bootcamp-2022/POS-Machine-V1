@@ -49,4 +49,22 @@ Discounted prices：7.50(yuan)
     expect(cartItems[1].subtotal).toBe(4.5)
     expect(cartItems[1].discount).toBe(0)
   })
+
+  it('should calculate total price with promotion when get cart items', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001'
+    ]
+
+    const cartItems: CartItem[] = getCartItems(tags)
+
+    expect(cartItems).toHaveLength(1)
+    expect(cartItems[0].name).toBe('Sprite')
+    expect(cartItems[0].barcode).toBe('ITEM000001')
+    expect(cartItems[0].unit).toBe('bottle')
+    expect(cartItems[0].quantity).toBe(3)
+    expect(cartItems[0].subtotal).toBe(6.0)
+    expect(cartItems[0].discount).toBe(3.0)
+  })
 })
