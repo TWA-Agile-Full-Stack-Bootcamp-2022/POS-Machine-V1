@@ -1,7 +1,7 @@
 import {printReceipt} from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
-  it.skip('should print receipt with promotion when print receipt', () => {
+  it('should print receipt with promotion when print receipt', () => {
     const tags = [
       'ITEM000001',
       'ITEM000001',
@@ -72,6 +72,14 @@ Discounted prices：7.50(yuan)
     expect(printReceipt(tags)).toContain(`----------------------
 Total：39.00(yuan)
 Discounted prices：3.00(yuan)
-********************** `)
+**********************`)
+  })
+
+  it('should merge same item when print receipt given tags ITEM000003 and ITEM000003', () => {
+    const tags = [
+      'ITEM000003',
+      'ITEM000003',
+    ]
+    expect(printReceipt(tags)).toContain('Name：Litchi，Quantity：2 pounds，Unit：15.00(yuan)，Subtotal：30.00(yuan)')
   })
 })

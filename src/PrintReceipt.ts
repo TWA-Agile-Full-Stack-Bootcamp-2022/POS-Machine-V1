@@ -26,26 +26,13 @@ function calculateSubtotal(product: { unit: string; price: number; name: string;
       discount: discountQty / 3 * product.price
     }
   }
-  return {subtotal:product.price * qty,discount:0}
-}
-function calculateSub(product: { unit: string; price: number; name: string; barcode: string }, qty: number, isDiscount: boolean) {
-  if (isDiscount) {
-    const noDiscountQty = qty % 3
-    const discountQty = qty - noDiscountQty
-    return discountQty / 3 * product.price * 2 + noDiscountQty * product.price
-  }
-  return product.price * qty
+  return {subtotal: product.price * qty, discount: 0}
 }
 
-function renderRow(tag: string, productMap: Map<string, { unit: string; price: number; name: string; barcode: string }>, result: { total: number; discountTotal: number; receipt: string }, buyTwoGetOneFreeTags: string[]) {
-  const tagInfo = tag.split('-')
-  const product = productMap.get(tagInfo[0])
-  const qty = tagInfo.length > 1 ? Number(tagInfo[1]) : 1
-  if (product === undefined) {
-    throw new Error('error item')
-  }
+function renderRow(product: { unit: string; price: number; name: string; barcode: string }, qty: number, productMap: Map<string, { unit: string; price: number; name: string; barcode: string }>, result: { total: number; discountTotal: number; receipt: string }, buyTwoGetOneFreeTags: string[]) {
+
   result.receipt += '\n'
-  const calculateResult = calculateSubtotal(product, qty, buyTwoGetOneFreeTags.includes(tagInfo[0]))
+  const calculateResult = calculateSubtotal(product, qty, buyTwoGetOneFreeTags.includes(product.barcode))
   result.total += calculateResult.subtotal
   result.discountTotal += calculateResult.discount
   result.receipt += renderRowReceipt(product, qty, calculateResult.subtotal)
@@ -56,7 +43,7 @@ function renderFooter(result: { total: number; discountTotal: number; receipt: s
 ----------------------
 Total：${result.total.toFixed(2)}(yuan)
 Discounted prices：${result.discountTotal.toFixed(2)}(yuan)
-********************** `
+**********************`
   result.receipt += footer
 }
 
@@ -71,8 +58,31 @@ export function printReceipt(tags: string[]): string {
   }
 
   renderTitle(result)
-  tags.map(tag => {
-    renderRow(tag, productMap, result, buyTwoGetOneFreeTags)
+
+  const tagLines = tags.map(tag => {
+    const tagInfo = tag.split('-')
+    const product = productMap.get(tagInfo[0])
+    const qty = tagInfo.length > 1 ? Number(tagInfo[1]) : 1
+    if (product === undefined) {
+      throw new Error('error item')
+    }
+    return {barcode: product.barcode, product: product, qty: qty}
+  })
+  const itemMap = new Map<string, { product: { unit: string; price: number; name: string; barcode: string }, qty: number }>()
+
+  tagLines.forEach(line => {
+    if (itemMap.has(line.barcode)) {
+      let currentQty = itemMap.get(line.barcode)
+      if (currentQty === undefined) {
+        currentQty = {product: line.product, qty: 0}
+      }
+      itemMap.set(line.barcode, {product: line.product, qty: line.qty + currentQty.qty})
+    } else {
+      itemMap.set(line.barcode, {product: line.product, qty: line.qty})
+    }
+  })
+  itemMap.forEach((productInfo, barcode) => {
+    renderRow(productInfo.product, productInfo.qty, productMap, result, buyTwoGetOneFreeTags)
   })
   renderFooter(result)
   return result.receipt
