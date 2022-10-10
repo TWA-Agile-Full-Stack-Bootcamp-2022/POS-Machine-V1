@@ -1,4 +1,4 @@
-import {loadAllItems} from './Dependencies'
+import {loadAllItems, loadPromotions} from './Dependencies'
 
 function loadProductMap() {
   const products = loadAllItems()
@@ -18,11 +18,16 @@ function renderTitle(receipt: string) {
   return receipt
 }
 
-function calculateSubtotal(product: { unit: string; price: number; name: string; barcode: string }, qty: number) {
+function calculateSubtotal(product: { unit: string; price: number; name: string; barcode: string }, qty: number,isDiscount:boolean) {
+  if (isDiscount){
+    const noDiscountQty = qty%3
+    const discountQty = qty - noDiscountQty
+    return discountQty/3*product.price*2 + noDiscountQty*product.price
+  }
   return product.price * qty
 }
 
-function renderRow(tag: string, productMap: Map<string, { unit: string; price: number; name: string; barcode: string }>, receipt: string) {
+function renderRow(tag: string, productMap: Map<string, { unit: string; price: number; name: string; barcode: string }>, receipt: string, buyTwoGetOneFreeTags: string[]) {
   const tagInfo = tag.split('-')
   const product = productMap.get(tagInfo[0])
   const qty = tagInfo.length > 1 ? Number(tagInfo[1]) : 1
@@ -30,16 +35,19 @@ function renderRow(tag: string, productMap: Map<string, { unit: string; price: n
     throw new Error('error item')
   }
   receipt += '\n'
-  receipt += renderRowReceipt(product, qty, calculateSubtotal(product, qty))
+  receipt += renderRowReceipt(product, qty, calculateSubtotal(product, qty, buyTwoGetOneFreeTags.includes(tagInfo[0])))
   return receipt
 }
 
 export function printReceipt(tags: string[]): string {
   const productMap = loadProductMap()
+  const promotions = loadPromotions()
+  const buyTwoGetOneFreeTags = promotions[0].barcodes
   let receipt = ''
   receipt = renderTitle(receipt)
   tags.map(tag => {
-    receipt = renderRow(tag, productMap, receipt)
+
+    receipt = renderRow(tag, productMap, receipt,buyTwoGetOneFreeTags)
   })
   return receipt
 }
