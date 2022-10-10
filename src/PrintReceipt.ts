@@ -28,17 +28,26 @@ export function getCartItems(tags: string[]): CartItem[] {
 function calculateCartItems(tags: string[], items: Item[]) {
   const cartItems: CartItem[] = []
   tags.forEach(tag => {
-    const matchedCartItem = cartItems.find(cartItem => cartItem.barcode === tag)
+    const [barcode, quantity] = getBarcodeAndQuantity(tag)
+    const matchedCartItem = cartItems.find(cartItem => cartItem.barcode === barcode)
     if (matchedCartItem) {
-      matchedCartItem.addQuantity(1)
+      matchedCartItem.addQuantity(quantity)
     } else {
-      const matchedItem = items.find(item => item.barcode === tag)
+      const matchedItem = items.find(item => item.barcode === barcode)
       if (matchedItem) {
-        cartItems.push(new CartItem(matchedItem))
+        cartItems.push(new CartItem(matchedItem, quantity))
       }
     }
   })
   return cartItems
+}
+
+function getBarcodeAndQuantity(tag: string) : [string, number] {
+  if (tag.includes('-')) {
+    const barcodeAndQuantity = tag.split('-')
+    return [barcodeAndQuantity[0], Number(barcodeAndQuantity[1])]
+  }
+  return [tag, 1]
 }
 
 function calculateWithPromotions(cartItems: CartItem[], promotions: Promotion[]) {

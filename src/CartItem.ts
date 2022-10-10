@@ -1,12 +1,12 @@
 import {Item} from './Item'
 
 export class CartItem {
-  constructor(item: Item) {
+  constructor(item: Item, quantity: number) {
     this.barcode = item.barcode
     this.name = item.name
     this.unit = item.unit
     this.price = item.price
-    this.quantity = 1
+    this.quantity = quantity
     this.subtotal = item.price
   }
 
