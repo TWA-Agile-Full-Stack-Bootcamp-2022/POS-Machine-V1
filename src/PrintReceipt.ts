@@ -8,8 +8,8 @@ function loadProductMap() {
     }))
 }
 
-function renderRowReceipt(product: { unit: string; price: number; name: string; barcode: string }, qty: number) {
-  return `Name：${product.name}，Quantity：${qty} ${product.unit}s，Unit：${product.price.toFixed(2)}(yuan)`
+function renderRowReceipt(product: { unit: string; price: number; name: string; barcode: string }, qty: number, subtotal: number) {
+  return `Name：${product.name}，Quantity：${qty} ${product.unit}s，Unit：${product.price.toFixed(2)}(yuan)，Subtotal：${subtotal.toFixed(2)}(yuan)`
 }
 
 function renderTitle(receipt: string) {
@@ -26,7 +26,7 @@ function renderRow(tag: string, productMap: Map<string, { unit: string; price: n
     throw new Error('error item')
   }
   receipt += '\n'
-  receipt += renderRowReceipt(product, qty)
+  receipt += renderRowReceipt(product, qty, product.price * qty)
   return receipt
 }
 
