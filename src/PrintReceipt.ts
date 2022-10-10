@@ -1,11 +1,15 @@
-import {loadAllItems, loadPromotions} from './Dependencies'
+import {loadAllItems} from './Dependencies'
 
-export function printReceipt(tags: string[]): string {
+function loadProductMap() {
   const products = loadAllItems()
-  const productMap = new Map(
+  return new Map(
     products.map(product => {
       return [product.barcode, product]
     }))
+}
+
+export function printReceipt(tags: string[]): string {
+  const productMap = loadProductMap()
   for (const index in tags) {
     if (!productMap.has(tags[index])) {
       throw new Error('error item')
