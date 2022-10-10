@@ -8,18 +8,27 @@ function loadProductMap() {
     }))
 }
 
+function renderRowReceipt(product: { unit: string; price: number; name: string; barcode: string }) {
+  return `Name：${product.name}，Quantity：1 ${product.unit}s，Unit：${product.price.toFixed(2)}(yuan)`
+}
+
+function renderTitle(receipt: string) {
+  const title = '***<store earning no money>Receipt ***'
+  receipt += title
+  return receipt
+}
+
 export function printReceipt(tags: string[]): string {
   const productMap = loadProductMap()
-  let receipt=''
-  const title = '***<store earning no money>Receipt ***'
-  receipt+=title
-  tags.map(tag =>{
+  let receipt = ''
+  receipt = renderTitle(receipt)
+  tags.map(tag => {
     const product = productMap.get(tag)
-    if (product===undefined){
+    if (product === undefined) {
       throw new Error('error item')
     }
-    receipt+='\n'
-    receipt+=`Name：${product.name}，Quantity：1 ${product.unit}s，Unit：${product.price.toFixed(2)}(yuan)`
+    receipt += '\n'
+    receipt += renderRowReceipt(product)
   })
   return receipt
 }
