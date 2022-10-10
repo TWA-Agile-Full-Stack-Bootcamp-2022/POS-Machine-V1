@@ -1,4 +1,4 @@
-import {printReceipt, getCartItems} from '../src/PrintReceipt'
+import {printReceipt, getCartItems, calculateTotalPrice} from '../src/PrintReceipt'
 import {CartItem} from '../src/CartItem'
 
 describe('printReceipt', () => {
@@ -83,5 +83,19 @@ Discounted prices：7.50(yuan)
     expect(cartItems[0].quantity).toBe(3)
     expect(cartItems[0].subtotal).toBe(6.0)
     expect(cartItems[0].discount).toBe(3.0)
+  })
+
+  it('should calculate total price and discount with promotion', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001-2',
+      'ITEM000005'
+    ]
+
+    const cartItems: CartItem[] = getCartItems(tags)
+    const [totalPrice, discountedPrice] = calculateTotalPrice(cartItems)
+
+    expect(totalPrice).toBe(10.5)
+    expect(discountedPrice).toBe(3.0)
   })
 })

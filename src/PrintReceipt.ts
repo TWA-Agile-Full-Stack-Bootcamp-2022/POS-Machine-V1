@@ -25,6 +25,12 @@ export function getCartItems(tags: string[]): CartItem[] {
   return cartItems
 }
 
+export function calculateTotalPrice(cartItems: CartItem[]) {
+  const totalPrice = cartItems.map(cartItem => cartItem.subtotal).reduce((accumulator, subtotal) => accumulator + subtotal)
+  const discountedPrice = cartItems.map(cartItem => cartItem.discount).reduce((accumulator, discount) => accumulator + discount)
+  return [totalPrice, discountedPrice]
+}
+
 function calculateCartItems(tags: string[], items: Item[]) {
   const cartItems: CartItem[] = []
   tags.forEach(tag => {
