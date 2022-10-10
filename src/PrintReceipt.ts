@@ -47,19 +47,8 @@ Discounted prices：${result.discountTotal.toFixed(2)}(yuan)
   result.receipt += footer
 }
 
-export function printReceipt(tags: string[]): string {
-  const productMap = loadProductMap()
-  const promotions = loadPromotions()
-  const buyTwoGetOneFreeTags = promotions[0].barcodes
-  const result = {
-    receipt: '',
-    total: 0,
-    discountTotal: 0,
-  }
-
-  renderTitle(result)
-
-  const tagLines = tags.map(tag => {
+function coverTagsToProductInfoAndQty(tags: string[], productMap: Map<string, { unit: string; price: number; name: string; barcode: string }>) {
+  return tags.map(tag => {
     const tagInfo = tag.split('-')
     const product = productMap.get(tagInfo[0])
     const qty = tagInfo.length > 1 ? Number(tagInfo[1]) : 1
@@ -68,8 +57,9 @@ export function printReceipt(tags: string[]): string {
     }
     return {barcode: product.barcode, product: product, qty: qty}
   })
-  const itemMap = new Map<string, { product: { unit: string; price: number; name: string; barcode: string }, qty: number }>()
+}
 
+function groupItemsByBarcode(tagLines: { product: { unit: string; price: number; name: string; barcode: string }; qty: number; barcode: string }[], itemMap: Map<string, { product: { unit: string; price: number; name: string; barcode: string }; qty: number }>) {
   tagLines.forEach(line => {
     if (itemMap.has(line.barcode)) {
       let currentQty = itemMap.get(line.barcode)
@@ -81,6 +71,25 @@ export function printReceipt(tags: string[]): string {
       itemMap.set(line.barcode, {product: line.product, qty: line.qty})
     }
   })
+  return itemMap
+}
+
+function coverTagsToLineMap(tags: string[], productMap: Map<string, { unit: string; price: number; name: string; barcode: string }>) {
+  const tagLines = coverTagsToProductInfoAndQty(tags, productMap)
+  const itemMap = new Map<string, { product: { unit: string; price: number; name: string; barcode: string }, qty: number }>()
+  return groupItemsByBarcode(tagLines, itemMap)
+}
+
+export function printReceipt(tags: string[]): string {
+  const productMap = loadProductMap()
+  const buyTwoGetOneFreeTags = (loadPromotions())[0].barcodes
+  const result = {
+    receipt: '',
+    total: 0,
+    discountTotal: 0,
+  }
+  renderTitle(result)
+  const itemMap = coverTagsToLineMap(tags, productMap)
   itemMap.forEach((productInfo, barcode) => {
     renderRow(productInfo.product, productInfo.qty, productMap, result, buyTwoGetOneFreeTags)
   })
