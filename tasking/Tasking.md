@@ -15,7 +15,7 @@
         barcodes: [string]
     }]: LoadPromotions()
     
-    Tags [String]
+    Tags: [String]
 ```
 - Output:
 ```
@@ -47,7 +47,7 @@
 ```
     TotalPrice {
         totalPrice: number,
-        DiscountedPrice: number
+        discountedPrice: number
     }
 ```
 
@@ -66,7 +66,7 @@
     
     TotalPrice {
         totalPrice: number,
-        DiscountedPrice: number
+        discountedPrice: number
     }
 ```
 - Output:

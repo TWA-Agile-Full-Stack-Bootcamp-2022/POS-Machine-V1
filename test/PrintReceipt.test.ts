@@ -1,4 +1,5 @@
-import {printReceipt} from '../src/PrintReceipt'
+import {printReceipt, getCartItems} from '../src/PrintReceipt'
+import {CartItem} from '../src/CartItem'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -23,5 +24,29 @@ Discounted prices：7.50(yuan)
 **********************`
 
     expect(printReceipt(tags)).toEqual(expectText)
+  })
+
+  it('should calculate total price without promotion when get cart items', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000005'
+    ]
+
+    const cartItems: CartItem[] = getCartItems(tags)
+
+    expect(cartItems).toHaveLength(2)
+    expect(cartItems[0].name).toBe('Sprite')
+    expect(cartItems[0].barcode).toBe('ITEM000001')
+    expect(cartItems[0].unit).toBe('bottle')
+    expect(cartItems[0].quantity).toBe(2)
+    expect(cartItems[0].subtotal).toBe(6.0)
+    expect(cartItems[0].discount).toBe(0)
+    expect(cartItems[1].name).toBe('Instant Noodles')
+    expect(cartItems[1].barcode).toBe('ITEM000005')
+    expect(cartItems[1].unit).toBe('bag')
+    expect(cartItems[1].quantity).toBe(1)
+    expect(cartItems[1].subtotal).toBe(4.5)
+    expect(cartItems[1].discount).toBe(0)
   })
 })

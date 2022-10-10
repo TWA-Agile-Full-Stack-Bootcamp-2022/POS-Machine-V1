@@ -1,4 +1,6 @@
 import {loadAllItems, loadPromotions} from './Dependencies'
+import {CartItem} from './CartItem'
+import {Item} from './Item'
 
 export function printReceipt(tags: string[]): string {
   return `***<store earning no money>Receipt ***
@@ -9,4 +11,23 @@ Name：Instant Noodles，Quantity：3 bags，Unit：4.50(yuan)，Subtotal：9.00
 Total：58.50(yuan)
 Discounted prices：7.50(yuan)
 **********************`
+}
+
+export function getCartItems(tags: string[]): CartItem[] {
+  const items: Item[] = loadAllItems()
+  const cartItems: CartItem[] = []
+
+  tags.forEach(tag => {
+    const matchedCartItem = cartItems.filter(cartItem => cartItem.barcode === tag)
+    if (matchedCartItem.length >= 1) {
+      matchedCartItem[0].addQuantity(1)
+    } else {
+      const matchedItems = items.filter(item => item.barcode === tag)
+      if (matchedItems.length >= 1) {
+        cartItems.push(new CartItem(matchedItems[0]))
+      }
+    }
+  })
+
+  return cartItems
 }
