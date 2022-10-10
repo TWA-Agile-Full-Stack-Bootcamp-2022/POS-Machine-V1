@@ -84,7 +84,54 @@ Discounted prices：4.00(yuan)
 # Practice Requirement
 
 1. Please draw the whole tasking diagram.
+![img.png](img.png)
 2. Please declare all the functions according to your diagram.
 3. Please write a test case following given...when...then pattern for a leaf
    block of the diagram. Then implement the block to pass the test.
+```
+given: print any()
+when: printReceipt
+then: return contains ***<store earning no money>Receipt *** 
+```
+
+```angular2html
+given:  item not in loadAllItems
+when: printReceipt
+then: thrown error item 
+```
+
+```markdown
+given: item in products for example ITEM000000
+when: printReceipt
+then: return contains Name：Coca-Cola，Quantity：1 bottles，Unit：3.00(yuan)
+```
+```markdown
+given: item in products for example ITEM000000-2
+when: printReceipt
+then: return contains Name：Coca-Cola，Quantity：2 bottles，Unit：3.00(yuan)
+```
+```markdown
+given: item in products and not in Promotions for example ITEM000003-3
+when: printReceipt
+then: return contains Name：Litchi，Quantity：2 pounds，Unit：15.00(yuan)，Subtotal：30.00(yuan)
+```
+```markdown
+given: item in products and in Promotions for example ITEM000000-4
+when: printReceipt
+then: return contains Name：Coca-Cola，Quantity：4 bottles，Unit：3.00(yuan)，Subtotal：9.00(yuan)
+```
+```markdown
+given: item in products and in Promotions for example ITEM000000-4,ITEM000003-3
+when: printReceipt
+then: return contains ----------------------
+Total：39.00(yuan)
+Discounted prices：3.00(yuan)
+**********************
+```
+
+```markdown
+given: item in products and in Promotions for example ITEM000003,ITEM000003
+when: printReceipt
+then: return containsthen: return contains Name：Litchi，Quantity：2 pounds，Unit：15.00(yuan)，Subtotal：30.00(yuan)
+********************** 
 4. Please repeat step 3 until all functions are implemented.

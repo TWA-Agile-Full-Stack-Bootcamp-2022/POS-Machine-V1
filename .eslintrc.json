@@ -45,13 +45,15 @@
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/no-unused-vars": "off",
         "node/no-missing-import": "off",
         "node/no-empty-function": "off",
         "node/no-unsupported-features/es-syntax": "off",
         "node/no-missing-require": "off",
         "node/shebang": "off",
         "no-dupe-class-members": "off",
-        "require-atomic-updates": "off"
+        "require-atomic-updates": "off",
+        "jest/no-disabled-tests": "off"
       },
       "parserOptions": {
         "ecmaVersion": 2018,
