@@ -1,7 +1,7 @@
 import {printReceipt} from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
-  it('should print receipt with promotion when print receipt', () => {
+  it.skip('should print receipt with promotion when print receipt', () => {
     const tags = [
       'ITEM000001',
       'ITEM000001',
@@ -23,5 +23,12 @@ Discounted prices：7.50(yuan)
 **********************`
 
     expect(printReceipt(tags)).toEqual(expectText)
+  })
+
+  it('should render title when print receipt given any input', () => {
+    const tags = [
+      'ITEM000001',
+    ]
+    expect(printReceipt(tags)).toContain('***<store earning no money>Receipt ***')
   })
 })
