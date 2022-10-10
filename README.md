@@ -120,4 +120,12 @@ given: item in products and in Promotions for example ITEM000000-4
 when: printReceipt
 then: return contains Name：Coca-Cola，Quantity：4 bottles，Unit：3.00(yuan)，Subtotal：9.00(yuan)
 ```
+```markdown
+given: item in products and in Promotions for example ITEM000000-4,ITEM000003-3
+when: printReceipt
+then: return contains ----------------------
+Total：39.00(yuan)
+Discounted prices：3.00(yuan)
+********************** 
+```
 4. Please repeat step 3 until all functions are implemented.

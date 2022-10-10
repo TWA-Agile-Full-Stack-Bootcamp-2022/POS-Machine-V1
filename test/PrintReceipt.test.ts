@@ -35,7 +35,7 @@ Discounted prices：7.50(yuan)
     const tags = [
       'ERRORITEM000001'
     ]
-    expect(()=>printReceipt(tags)).toThrow(new Error('error item'))
+    expect(() => printReceipt(tags)).toThrow(new Error('error item'))
   })
   it('should render item name and get unit price when print receipt given item in product and qty 1', () => {
     const tags = [
@@ -62,5 +62,16 @@ Discounted prices：7.50(yuan)
       'ITEM000000-4',
     ]
     expect(printReceipt(tags)).toContain('Name：Coca-Cola，Quantity：4 bottles，Unit：3.00(yuan)，Subtotal：9.00(yuan)')
+  })
+
+  it('should render footer when print receipt given tags ITEM000000-4 and ITEM000003-2', () => {
+    const tags = [
+      'ITEM000000-4',
+      'ITEM000003-2'
+    ]
+    expect(printReceipt(tags)).toContain(`----------------------
+Total：39.00(yuan)
+Discounted prices：3.00(yuan)
+********************** `)
   })
 })
