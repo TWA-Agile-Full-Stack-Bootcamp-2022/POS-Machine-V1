@@ -10,10 +10,10 @@ function loadProductMap() {
 
 export function printReceipt(tags: string[]): string {
   const productMap = loadProductMap()
-  for (const index in tags) {
-    if (!productMap.has(tags[index])) {
+  tags.map(tag => {
+    if (!productMap.has(tag)) {
       throw new Error('error item')
     }
-  }
+  })
   return '***<store earning no money>Receipt ***'
 }
