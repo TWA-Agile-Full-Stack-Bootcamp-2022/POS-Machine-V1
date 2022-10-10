@@ -31,4 +31,10 @@ Discounted prices：7.50(yuan)
     ]
     expect(printReceipt(tags)).toContain('***<store earning no money>Receipt ***')
   })
+  it('should throw error when print receipt given item not in products', () => {
+    const tags = [
+      'ERRORITEM000001'
+    ]
+    expect(()=>printReceipt(tags)).toThrow(new Error('error item'))
+  })
 })

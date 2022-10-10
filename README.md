@@ -93,4 +93,10 @@ given: print any()
 when: printReceipt
 then: return contains ***<store earning no money>Receipt *** 
 ```
+
+```angular2html
+given:  item not in loadAllItems
+when: printReceipt
+then: thrown error item 
+```
 4. Please repeat step 3 until all functions are implemented.
