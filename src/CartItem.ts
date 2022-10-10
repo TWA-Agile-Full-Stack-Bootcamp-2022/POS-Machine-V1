@@ -7,7 +7,7 @@ export class CartItem {
     this.unit = item.unit
     this.price = item.price
     this.quantity = quantity
-    this.subtotal = item.price
+    this.subtotal = item.price * quantity
   }
 
   addQuantity(quantity: number) {

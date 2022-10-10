@@ -4,14 +4,31 @@ import {Item} from './Item'
 import {Promotion} from './Promotion'
 
 export function printReceipt(tags: string[]): string {
-  return `***<store earning no money>Receipt ***
-Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
-Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)
-Name：Instant Noodles，Quantity：3 bags，Unit：4.50(yuan)，Subtotal：9.00(yuan)
-----------------------
-Total：58.50(yuan)
-Discounted prices：7.50(yuan)
-**********************`
+  const cartItems = getCartItems(tags)
+  const [totalPrice, discount] = calculateTotalPrice(cartItems)
+  return printReceiptText(cartItems, [totalPrice, discount])
+}
+
+function printReceiptText(cartItems: CartItem[], [totalPrice, discount]:[number, number]) {
+  const itemReceipt = cartItems.map(cartItem => printReceiptForCartItem(cartItem))
+  return '***<store earning no money>Receipt ***\n' +
+    itemReceipt.join('\n') + '\n' +
+    '----------------------\n' +
+    printTotalPriceAndDiscount(totalPrice, discount) + '\n' +
+    '**********************'
+}
+
+function printReceiptForCartItem(cartItem: CartItem) {
+  return 'Name：' + cartItem.name +
+    '，Quantity：' + cartItem.quantity +
+    ' ' + cartItem.unit +
+    's，Unit：' + cartItem.price.toFixed(2) +
+    '(yuan)，Subtotal：' + cartItem.subtotal.toFixed(2) + '(yuan)'
+}
+
+function printTotalPriceAndDiscount(totalPrice: number, discount: number) {
+  return 'Total：' + totalPrice.toFixed(2) +
+    '(yuan)\nDiscounted prices：' + discount.toFixed(2) + '(yuan)'
 }
 
 export function getCartItems(tags: string[]): CartItem[] {
@@ -48,7 +65,7 @@ function calculateCartItems(tags: string[], items: Item[]) {
   return cartItems
 }
 
-function getBarcodeAndQuantity(tag: string) : [string, number] {
+function getBarcodeAndQuantity(tag: string): [string, number] {
   if (tag.includes('-')) {
     const barcodeAndQuantity = tag.split('-')
     return [barcodeAndQuantity[0], Number(barcodeAndQuantity[1])]
