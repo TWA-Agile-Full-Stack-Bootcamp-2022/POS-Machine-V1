@@ -99,4 +99,11 @@ given:  item not in loadAllItems
 when: printReceipt
 then: thrown error item 
 ```
+
+```markdown
+given: item in products for example ITEM000000
+when: printReceipt
+then: return contains Name：Coca-Cola，Quantity：1 bottles，Unit：3.00(yuan)
+```
+
 4. Please repeat step 3 until all functions are implemented.
