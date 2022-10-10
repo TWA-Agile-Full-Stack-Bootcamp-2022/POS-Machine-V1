@@ -105,5 +105,9 @@ given: item in products for example ITEM000000
 when: printReceipt
 then: return contains Name：Coca-Cola，Quantity：1 bottles，Unit：3.00(yuan)
 ```
-
+```markdown
+given: item in products for example ITEM000000-2
+when: printReceipt
+then: return contains Name：Coca-Cola，Quantity：2 bottles，Unit：3.00(yuan)
+```
 4. Please repeat step 3 until all functions are implemented.

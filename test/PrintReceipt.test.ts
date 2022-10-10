@@ -43,4 +43,10 @@ Discounted prices：7.50(yuan)
     ]
     expect(printReceipt(tags)).toContain('Name：Coca-Cola，Quantity：1 bottles，Unit：3.00(yuan)')
   })
+  it('should render by qty from tag when print receipt given tags ITEM000000-2', () => {
+    const tags = [
+      'ITEM000000-2',
+    ]
+    expect(printReceipt(tags)).toContain('Name：Coca-Cola，Quantity：2 bottles，Unit：3.00(yuan)')
+  })
 })
