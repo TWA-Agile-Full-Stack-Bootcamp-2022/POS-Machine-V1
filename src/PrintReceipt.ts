@@ -51,6 +51,15 @@ function renderRow(tag: string, productMap: Map<string, { unit: string; price: n
   result.receipt += renderRowReceipt(product, qty, calculateResult.subtotal)
 }
 
+function renderFooter(result: { total: number; discountTotal: number; receipt: string }) {
+  const footer = `
+----------------------
+Total：${result.total.toFixed(2)}(yuan)
+Discounted prices：${result.discountTotal.toFixed(2)}(yuan)
+********************** `
+  result.receipt += footer
+}
+
 export function printReceipt(tags: string[]): string {
   const productMap = loadProductMap()
   const promotions = loadPromotions()
@@ -65,11 +74,6 @@ export function printReceipt(tags: string[]): string {
   tags.map(tag => {
     renderRow(tag, productMap, result, buyTwoGetOneFreeTags)
   })
-  const footer = `
-----------------------
-Total：${result.total.toFixed(2)}(yuan)
-Discounted prices：${result.discountTotal.toFixed(2)}(yuan)
-********************** `
-  result.receipt+=footer
+  renderFooter(result)
   return result.receipt
 }
