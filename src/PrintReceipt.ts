@@ -43,17 +43,21 @@ function calculateCartItems(tags: string[], items: Item[]) {
   const cartItems: CartItem[] = []
   tags.forEach(tag => {
     const [barcode, quantity] = getBarcodeAndQuantity(tag)
-    const matchedCartItem = cartItems.find(cartItem => cartItem.barcode === barcode)
-    if (matchedCartItem) {
-      matchedCartItem.addQuantity(quantity)
+    const existingCartItem = cartItems.find(cartItem => cartItem.barcode === barcode)
+    if (existingCartItem) {
+      existingCartItem.addQuantity(quantity)
     } else {
-      const matchedItem = items.find(item => item.barcode === barcode)
-      if (matchedItem) {
-        cartItems.push(new CartItem(matchedItem, quantity))
-      }
+      addNewCartItem(barcode, quantity, items, cartItems)
     }
   })
   return cartItems
+}
+
+function addNewCartItem(barcode: string, quantity: number, items: Item[], cartItems: CartItem[]) {
+  const matchedItem = items.find(item => item.barcode === barcode)
+  if (matchedItem) {
+    cartItems.push(new CartItem(matchedItem, quantity))
+  }
 }
 
 function getBarcodeAndQuantity(tag: string): [string, number] {
