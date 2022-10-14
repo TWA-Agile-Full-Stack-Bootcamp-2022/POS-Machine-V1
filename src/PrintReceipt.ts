@@ -9,26 +9,21 @@ export function printReceipt(tags: string[]): string {
   return printReceiptText(cartItems, [totalPrice, discount])
 }
 
-function printReceiptText(cartItems: CartItem[], [totalPrice, discount]:[number, number]) {
+function printReceiptText(cartItems: CartItem[], [totalPrice, discount]: [number, number]) {
   const itemReceipt = cartItems.map(cartItem => printReceiptForCartItem(cartItem))
-  return '***<store earning no money>Receipt ***\n' +
-    itemReceipt.join('\n') + '\n' +
-    '----------------------\n' +
-    printTotalPriceAndDiscount(totalPrice, discount) + '\n' +
-    '**********************'
+  return `***<store earning no money>Receipt ***
+${itemReceipt.join('\n')}
+----------------------
+${printTotalPriceAndDiscount(totalPrice, discount)}
+**********************`
 }
 
 function printReceiptForCartItem(cartItem: CartItem) {
-  return 'Name：' + cartItem.name +
-    '，Quantity：' + cartItem.quantity +
-    ' ' + cartItem.unit +
-    's，Unit：' + cartItem.price.toFixed(2) +
-    '(yuan)，Subtotal：' + cartItem.subtotal.toFixed(2) + '(yuan)'
+  return `Name：${cartItem.name}，Quantity：${cartItem.quantity} ${cartItem.unit}s，Unit：${cartItem.price.toFixed(2)}(yuan)，Subtotal：${cartItem.subtotal.toFixed(2)}(yuan)`
 }
 
 function printTotalPriceAndDiscount(totalPrice: number, discount: number) {
-  return 'Total：' + totalPrice.toFixed(2) +
-    '(yuan)\nDiscounted prices：' + discount.toFixed(2) + '(yuan)'
+  return `Total：${totalPrice.toFixed(2)}(yuan)\nDiscounted prices：${discount.toFixed(2)}(yuan)`
 }
 
 export function getCartItems(tags: string[]): CartItem[] {
