@@ -10,16 +10,12 @@ export function printReceipt(tags: string[]): string {
 }
 
 function printReceiptText(cartItems: CartItem[], [totalPrice, discount]: [number, number]) {
-  const itemReceipt = cartItems.map(cartItem => printReceiptForCartItem(cartItem))
+  const itemReceipt = cartItems.map(cartItem => cartItem.toString())
   return `***<store earning no money>Receipt ***
 ${itemReceipt.join('\n')}
 ----------------------
 ${printTotalPriceAndDiscount(totalPrice, discount)}
 **********************`
-}
-
-function printReceiptForCartItem(cartItem: CartItem) {
-  return `Name：${cartItem.name}，Quantity：${cartItem.quantity} ${cartItem.unit}s，Unit：${cartItem.price.toFixed(2)}(yuan)，Subtotal：${cartItem.subtotal.toFixed(2)}(yuan)`
 }
 
 function printTotalPriceAndDiscount(totalPrice: number, discount: number) {

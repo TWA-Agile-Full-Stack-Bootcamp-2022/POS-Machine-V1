@@ -15,6 +15,10 @@ export class CartItem {
     this.subtotal += this.price * quantity
   }
 
+  toString() {
+    return `Name：${this.name}，Quantity：${this.quantity} ${this.unit}s，Unit：${this.price.toFixed(2)}(yuan)，Subtotal：${this.subtotal.toFixed(2)}(yuan)`
+  }
+
   barcode = ''
   name = ''
   unit = ''
