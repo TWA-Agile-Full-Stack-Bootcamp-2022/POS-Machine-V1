@@ -27,7 +27,8 @@
     "quotes": ["warn", "single", { "avoidEscape": true }],
     "no-trailing-spaces": "error",
     "eol-last": "error",
-    "eqeqeq": "error"
+    "eqeqeq": "error",
+    "jest/valid-title": "off"
   },
   "overrides": [
     {
