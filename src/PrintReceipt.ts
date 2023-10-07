@@ -31,7 +31,9 @@ export function printReceipt(tags: string[]): string {
   const parsedTags: Tag[] = parseTags(tags)
   const aggregatedTags: Tag[] = aggregateTags(parsedTags)
   const receiptItems: ReceiptItem[] = generateReceiptItems(aggregatedTags)
+  return renderReceipt(receiptItems)
 }
+
 function generateReceiptItems(aggregatedTags: Tag[]): ReceiptItem[] {
   const calculateDiscountedSubtotal = (quantity: number, price: number, promotionType: string| undefined): number =>  {
     if (promotionType === 'BUY_TWO_GET_ONE_FREE' && quantity >=2 ) {
@@ -90,4 +92,15 @@ function parseTags(tags: string[]): Tag[] {
     }
   })
 }
+
+function renderReceipt(receiptItems: ReceiptItem[]): string {
+  return ['***<store earning no money>Receipt ***']
+    .concat(receiptItems.map(receiptItem => `Name：${receiptItem.name}，Quantity：${receiptItem.quantity.value} ${receiptItem.quantity.unit}，Unit：${receiptItem.price.toFixed(2)}(yuan)，Subtotal：${receiptItem.subtotal.toFixed(2)}(yuan)`))
+    .concat(['----------------------'])
+    .concat([`Total：${receiptItems.reduce((accumulator, current) => accumulator + current.subtotal, 0).toFixed(2)}(yuan)`])
+    .concat([`Discounted prices：${(
+      receiptItems.reduce((accumulator, current) => accumulator + current.quantity.value*current.price, 0)
+        - receiptItems.reduce((accumulator, current) => accumulator + current.subtotal, 0)
+    ).toFixed(2)}(yuan)`])
+    .concat(['**********************']).join('\n')
 }
