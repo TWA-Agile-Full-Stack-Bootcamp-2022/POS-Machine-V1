@@ -1,12 +1,46 @@
 import {loadAllItems, loadPromotions} from './Dependencies'
 
+interface Item {
+  barcode: string;
+  name: string;
+  unit: string;
+  price: number;
+}
+
+interface Tag {
+  barcode: string;
+  quantity: number;
+  item: Item;
+  promotionType?: string
+}
+
 export function printReceipt(tags: string[]): string {
-  return `***<store earning no money>Receipt ***
-Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
-Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)
-Name：Instant Noodles，Quantity：3 bags，Unit：4.50(yuan)，Subtotal：9.00(yuan)
-----------------------
-Total：58.50(yuan)
-Discounted prices：7.50(yuan)
-**********************`
+  const parsedTags: Tag[] = parseTags(tags)
+}
+function parseTags(tags: string[]): Tag[] {
+  const parseQuantity = (quantityStr: string) => {
+    const quantity = parseFloat(quantityStr)
+    if (isNaN(quantity)) {
+      throw new Error('Not a valid quantity')
+    }
+    return quantity
+  }
+  const allItems = loadAllItems()
+  const promotions = loadPromotions()
+  return tags.map(tag => {
+    const parts = tag.split('-')
+    const barcode = parts[0]
+    const item = allItems.find(item => item.barcode === barcode)
+    if(item === undefined) {
+      throw new Error(`The barcode ${tag} is not registered`)
+    }
+    const promotion = promotions.find(promotion => promotion.barcodes.includes(barcode))
+    return {
+      barcode: barcode,
+      quantity: parts.length > 1? parseQuantity(parts[1]):1,
+      item: item,
+      promotionType: promotion?.type
+    }
+  })
+}
 }
