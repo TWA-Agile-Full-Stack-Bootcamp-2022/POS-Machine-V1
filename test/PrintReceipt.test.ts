@@ -44,6 +44,19 @@ Discounted prices：0.00(yuan)
   },
 ]
 
+const badTestCases: TestCase[] = [
+  {
+    name: 'should throw error when print receipt given the tag contains invalid quantity',
+    tags: [
+      'ITEM000001-a',
+    ],
+  },
+  {
+    name: 'should throw error when print receipt given the tag contains unregistered barcode',
+    tags: [
+      'ITEM00000999',
+    ],
+  }
 ]
 
 describe('printReceipt', () => {
@@ -59,5 +72,17 @@ describe('printReceipt', () => {
       expect(receipt).toEqual(testCase.expected)
     })
   })
+
+  badTestCases.forEach(testCase => {
+    it(testCase.name, () => {
+      // given
+      const tags = testCase.tags
+
+      // when
+      const print = () => printReceipt(tags)
+
+      // then
+      expect(print).toThrow()
+    })
   })
 })
