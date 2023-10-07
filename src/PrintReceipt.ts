@@ -16,7 +16,17 @@ interface Tag {
 
 export function printReceipt(tags: string[]): string {
   const parsedTags: Tag[] = parseTags(tags)
+  const aggregatedTags: Tag[] = aggregateTags(parsedTags)
 }
+function aggregateTags(parsedTags: Tag[]): Tag[] {
+  const aggregatedTags: Tag[] = []
+  for(const tag of parsedTags) {
+    const aggregator: Tag | undefined = aggregatedTags.find(t => t.barcode === tag.barcode)
+    aggregator === undefined? aggregatedTags.push(tag): aggregator.quantity += tag.quantity
+  }
+  return aggregatedTags
+}
+
 function parseTags(tags: string[]): Tag[] {
   const parseQuantity = (quantityStr: string) => {
     const quantity = parseFloat(quantityStr)
