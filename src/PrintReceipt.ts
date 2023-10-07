@@ -1,5 +1,18 @@
 import {loadAllItems, loadPromotions} from './Dependencies'
 
+interface Quantity {
+  value: number;
+  unit: string
+}
+
+interface ReceiptItem {
+  name: string;
+  quantity: Quantity;
+  price: number;
+  subtotal: number;
+  discountedPrice: number
+}
+
 interface Item {
   barcode: string;
   name: string;
@@ -17,7 +30,31 @@ interface Tag {
 export function printReceipt(tags: string[]): string {
   const parsedTags: Tag[] = parseTags(tags)
   const aggregatedTags: Tag[] = aggregateTags(parsedTags)
+  const receiptItems: ReceiptItem[] = generateReceiptItems(aggregatedTags)
 }
+function generateReceiptItems(aggregatedTags: Tag[]): ReceiptItem[] {
+  const calculateDiscountedSubtotal = (quantity: number, price: number, promotionType: string| undefined): number =>  {
+    if (promotionType === 'BUY_TWO_GET_ONE_FREE' && quantity >=2 ) {
+      return (quantity - 1) * price
+    } else {
+      return quantity * price
+    }
+  }
+  return aggregatedTags.map(tag => {
+    const discountedSubtotal = calculateDiscountedSubtotal(tag.quantity, tag.item.price, tag.promotionType)
+    return {
+      name: tag.item.name,
+      quantity: {
+        value: tag.quantity,
+        unit: tag.quantity>1? `${tag.item.unit}s`: tag.item.unit
+      },
+      price: tag.item.price,
+      subtotal: discountedSubtotal,
+      discountedPrice: tag.quantity * tag.item.price - discountedSubtotal
+    }
+  })
+}
+
 function aggregateTags(parsedTags: Tag[]): Tag[] {
   const aggregatedTags: Tag[] = []
   for(const tag of parsedTags) {
