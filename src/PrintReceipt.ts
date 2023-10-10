@@ -1,4 +1,5 @@
 import {loadAllItems, loadPromotions} from './Dependencies'
+import { Item } from './Item'
 
 export function printReceipt(tags: string[]): string {
   return `***<store earning no money>Receipt ***
