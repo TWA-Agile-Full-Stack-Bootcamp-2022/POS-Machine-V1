@@ -1,4 +1,4 @@
-import { buildItemsMapWithBarcode, createReceiptItem, printReceipt } from '../src/PrintReceipt'
+import {buildItemsMapWithBarcode, createReceiptItem, parseReceiptItems, printReceipt} from '../src/PrintReceipt'
 import { Item } from '../src/Item'
 
 describe('printReceipt', () => {
@@ -47,7 +47,6 @@ Discounted prices：7.50(yuan)
         expect(item!.price).toEqual(3.00)
       })
     })
-
     describe('createReceiptItem', () => {
       it('should create receiptItem by given item and quantity', () => {
         // given
@@ -63,6 +62,21 @@ Discounted prices：7.50(yuan)
         expect(receiptItem!.unitPrice).toEqual(3.00)
         expect(receiptItem!.quantity).toEqual(quantity)
       })
+    })
+    it('should initial the quantity by given multiple same barcodes count', () => {
+      // given
+      const barcodes = [
+        'ITEM000001',
+        'ITEM000001',
+        'ITEM000001'
+      ]
+      const expectQuantity = 3
+      // when
+      const receiptItemsMap = parseReceiptItems(barcodes)
+      // then
+      const receiptItem = receiptItemsMap.get('ITEM000001')
+      expect(receiptItem!.barcode).toEqual('ITEM000001')
+      expect(receiptItem!.quantity).toEqual(expectQuantity)
     })
   })
 })
