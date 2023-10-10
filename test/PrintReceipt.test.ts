@@ -1,4 +1,4 @@
-import {printReceipt} from '../src/PrintReceipt'
+import {buildItemsMapWithBarcode, printReceipt} from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -23,5 +23,28 @@ Discounted prices：7.50(yuan)
 **********************`
 
     expect(printReceipt(tags)).toEqual(expectText)
+  })
+
+  describe('parseReceiptItems', () => {
+    describe('buildItemsMapWithBarcode', () => {
+      it('should load items index by barcodes with given items', () => {
+        // given
+        const items = [{
+          barcode: 'ITEM000000',
+          name: 'Coca-Cola',
+          unit: 'bottle',
+          price: 3.00
+        }]
+        // when
+        const itemMap = buildItemsMapWithBarcode(items)
+        // then
+        const item = itemMap.get('ITEM000000')
+        expect(item).not.toBeUndefined()
+        expect(item!.barcode).toEqual('ITEM000000')
+        expect(item!.name).toEqual('Coca-Cola')
+        expect(item!.unit).toEqual( 'bottle')
+        expect(item!.price).toEqual(3.00)
+      })
+    })
   })
 })

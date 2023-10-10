@@ -10,3 +10,10 @@ Total：58.50(yuan)
 Discounted prices：7.50(yuan)
 **********************`
 }
+
+
+export function buildItemsMapWithBarcode(items: Item[]): Map<string, Item> {
+  const itemsMap = new Map()
+  items.forEach( item => itemsMap.set(item.barcode, item))
+  return itemsMap
+}
