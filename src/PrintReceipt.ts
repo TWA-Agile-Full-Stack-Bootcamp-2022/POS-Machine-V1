@@ -1,5 +1,6 @@
 import {loadAllItems, loadPromotions} from './Dependencies'
 import { Item } from './Item'
+import { ReceiptItem } from './ReceiptItem'
 
 export function printReceipt(tags: string[]): string {
   return `***<store earning no money>Receipt ***
@@ -18,3 +19,8 @@ export function buildItemsMapWithBarcode(items: Item[]): Map<string, Item> {
   items.forEach( item => itemsMap.set(item.barcode, item))
   return itemsMap
 }
+
+export function createReceiptItem(item: Item, quantity: number): ReceiptItem {
+  return new ReceiptItem(item.barcode, item.name, item.unit, item.price, quantity)
+}
+
