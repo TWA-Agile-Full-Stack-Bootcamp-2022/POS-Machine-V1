@@ -24,16 +24,19 @@ export function createReceiptItem(item: Item, quantity: number): ReceiptItem {
   return new ReceiptItem(item.barcode, item.name, item.unit, item.price, quantity)
 }
 
-export function parseReceiptItems(barcodes: string[]): Map<string, ReceiptItem>  {
+export function parseReceiptItems(tags: string[]): Map<string, ReceiptItem>  {
   const items = loadAllItems()
   const itemsMapWithBarcode = buildItemsMapWithBarcode(items)
   const receiptItemsMap = new Map()
-  barcodes.forEach( barcode => {
+  tags.forEach( tag => {
+    const tagSplitWords = tag.split('-')
+    const barcode = tagSplitWords[0]
+    const quantity = tagSplitWords[1] === undefined ? 1 : parseFloat(tagSplitWords[1])
     const item = itemsMapWithBarcode.get(barcode)
     let receiptItem = receiptItemsMap.get(barcode)
     if(item !== undefined) {
       if(receiptItem === undefined) {
-        receiptItem = createReceiptItem(item, 1)
+        receiptItem = createReceiptItem(item, quantity)
         receiptItemsMap.set(barcode, receiptItem)
       } else {
         receiptItem.quantity += 1

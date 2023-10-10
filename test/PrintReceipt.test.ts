@@ -78,5 +78,19 @@ Discounted prices：7.50(yuan)
       expect(receiptItem!.barcode).toEqual('ITEM000001')
       expect(receiptItem!.quantity).toEqual(expectQuantity)
     })
+
+    it('should initial the quantity by given barcode with dash "-"', () => {
+      // given
+      const barcodes = [
+        'ITEM000003-2.5'
+      ]
+      const expectQuantity = 2.5
+      // when
+      const receiptItemsMap = parseReceiptItems(barcodes)
+      // then
+      const receiptItem = receiptItemsMap.get('ITEM000003')
+      expect(receiptItem!.barcode).toEqual('ITEM000003')
+      expect(receiptItem!.quantity).toEqual(expectQuantity)
+    })
   })
 })
