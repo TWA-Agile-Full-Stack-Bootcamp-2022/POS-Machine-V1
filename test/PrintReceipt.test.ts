@@ -1,7 +1,7 @@
 import {
   buildItemsMapWithBarcode,
   calculateDiscountByPromotion, calculateReceiptItemsDiscount,
-  createReceiptItem, generateReceiptItemPrintInfo,
+  createReceiptItem, generateReceiptItemPrintInfo, generateReceiptPrintInfo,
   parseReceiptItems,
   printReceipt
 } from '../src/PrintReceipt'
@@ -202,11 +202,32 @@ Discounted prices：7.50(yuan)
         const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3.00, 2)
         receiptItem.discount = 3
         // when
-        const receiptITemPrintInfo = generateReceiptItemPrintInfo(receiptItem)
+        const receiptItemPrintInfo = generateReceiptItemPrintInfo(receiptItem)
         // then
         const expectText = 'Name：Coca-Cola，Quantity：2 bottles，Unit：3.00(yuan)，Subtotal：3.00(yuan)'
-        expect(receiptITemPrintInfo).toEqual(expectText)
+        expect(receiptItemPrintInfo).toEqual(expectText)
       })
+    })
+
+    it('should generate all receipt item info with total price and discount', () => {
+      // given
+      const receiptItemsMap = new Map()
+      const receiptItemCoca = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3.00, 2)
+      const receiptItemSprite = new ReceiptItem('ITEM000001', 'Sprite', 'bottle', 3.00, 1)
+      receiptItemCoca.discount = 3
+      receiptItemsMap.set('ITEM000000', receiptItemCoca)
+      receiptItemsMap.set('ITEM000001', receiptItemSprite)
+      // when
+      const receipt = generateReceiptPrintInfo(receiptItemsMap)
+      // then
+      const expectText = `***<store earning no money>Receipt ***
+Name：Coca-Cola，Quantity：2 bottles，Unit：3.00(yuan)，Subtotal：3.00(yuan)
+Name：Sprite，Quantity：1 bottle，Unit：3.00(yuan)，Subtotal：3.00(yuan)
+----------------------
+Total：6.00(yuan)
+Discounted prices：3.00(yuan)
+**********************`
+      expect(receipt).toEqual(expectText)
     })
   })
 })

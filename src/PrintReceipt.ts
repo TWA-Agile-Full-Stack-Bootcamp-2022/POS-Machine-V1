@@ -71,3 +71,22 @@ export function generateReceiptItemPrintInfo(receiptItem: ReceiptItem): string {
 }
 
 
+export function generateReceiptPrintInfo(receiptItemsMap: Map<string, ReceiptItem>): string {
+  const receiptHeader = '***<store earning no money>Receipt ***\n'
+  let totalPrice = 0
+  let discountedPrice = 0
+  let receiptContents = ''
+  receiptItemsMap.forEach( (receiptItem) => {
+    receiptContents += (generateReceiptItemPrintInfo(receiptItem) + '\n')
+    totalPrice += (receiptItem.unitPrice * receiptItem.quantity - receiptItem.discount)
+    discountedPrice += receiptItem.discount
+  })
+  const receiptTotal = `----------------------
+Total：${totalPrice.toFixed(2)}(yuan)
+Discounted prices：${discountedPrice.toFixed(2)}(yuan)
+**********************`
+  return `${receiptHeader}${receiptContents}${receiptTotal}`
+}
+
+
+
