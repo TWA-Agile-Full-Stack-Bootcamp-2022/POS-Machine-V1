@@ -39,7 +39,7 @@ export function parseReceiptItems(tags: string[]): Map<string, ReceiptItem>  {
         receiptItem = createReceiptItem(item, quantity)
         receiptItemsMap.set(barcode, receiptItem)
       } else {
-        receiptItem.quantity += 1
+        receiptItem.quantity += quantity
       }
     }
   })
