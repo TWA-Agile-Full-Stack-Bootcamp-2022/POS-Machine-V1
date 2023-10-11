@@ -1,6 +1,6 @@
 import {
   buildItemsMapWithBarcode,
-  calculateDiscountByPromotion,
+  calculateDiscountByPromotion, calculateReceiptItemsDiscount,
   createReceiptItem,
   parseReceiptItems,
   printReceipt
@@ -177,6 +177,21 @@ Discounted prices：7.50(yuan)
         // then
         expect(discount).toEqual(0)
       })
+    })
+
+    it('should return the receiptItems with discount', () => {
+      // given
+      const receiptItemsMap = new Map()
+      const givenBarcode = 'ITEM000000'
+      const givenUnitPrice = 3
+      const givenQuantity = 2
+      const receiptItem = new ReceiptItem(givenBarcode, 'Coca-Cola', 'bottle', 3, 2)
+      receiptItemsMap.set(givenBarcode, receiptItem)
+      // when
+      calculateReceiptItemsDiscount(receiptItemsMap)
+      // then
+      const expectBuyTwoOneFreeDiscount = Math.floor(givenQuantity/2) * givenUnitPrice
+      expect(receiptItemsMap.get(givenBarcode)!.discount).toEqual(expectBuyTwoOneFreeDiscount)
     })
   })
 })

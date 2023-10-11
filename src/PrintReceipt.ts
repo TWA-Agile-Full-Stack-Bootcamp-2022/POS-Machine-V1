@@ -54,4 +54,11 @@ export function calculateDiscountByPromotion(receiptItem: ReceiptItem, promotion
   return 0
 }
 
+export function calculateReceiptItemsDiscount(receiptItemsMap: Map<string, ReceiptItem>) {
+  const promotions = loadPromotions()
+  receiptItemsMap.forEach( (receiptItem) => {
+    receiptItem.discount = calculateDiscountByPromotion(receiptItem, promotions)
+  })
+}
+
 
