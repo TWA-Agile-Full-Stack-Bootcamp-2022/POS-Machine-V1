@@ -147,14 +147,14 @@ Discounted prices：7.50(yuan)
           }
         ]
         const givenPrice = 3.0
-        const givenQuantity = 2
+        const givenQuantity = 3
         const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', givenPrice, givenQuantity)
         // when
         const discount = calculateDiscountByPromotion(receiptItem, promotions)
         // then
-        expect(discount).toEqual(Math.floor(givenQuantity/2) * givenPrice)
+        expect(discount).toEqual(Math.floor(givenQuantity/3) * givenPrice)
       })
-      it('should return 0 given item in BUY_TWO_GET_ONE_FREE promotion but quantity less than 2', () => {
+      it('should return 0 given item in BUY_TWO_GET_ONE_FREE promotion but quantity less than 3', () => {
         // given
         const promotions = [
           {
@@ -166,7 +166,7 @@ Discounted prices：7.50(yuan)
             ]
           }
         ]
-        const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3, 1)
+        const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3, 2)
         // when
         const discount = calculateDiscountByPromotion(receiptItem, promotions)
         // then
@@ -198,13 +198,13 @@ Discounted prices：7.50(yuan)
       const receiptItemsMap = new Map()
       const givenBarcode = 'ITEM000000'
       const givenUnitPrice = 3
-      const givenQuantity = 2
-      const receiptItem = new ReceiptItem(givenBarcode, 'Coca-Cola', 'bottle', 3, 2)
+      const givenQuantity = 3
+      const receiptItem = new ReceiptItem(givenBarcode, 'Coca-Cola', 'bottle', 3, 3)
       receiptItemsMap.set(givenBarcode, receiptItem)
       // when
       calculateReceiptItemsDiscount(receiptItemsMap)
       // then
-      const expectBuyTwoOneFreeDiscount = Math.floor(givenQuantity/2) * givenUnitPrice
+      const expectBuyTwoOneFreeDiscount = Math.floor(givenQuantity/3) * givenUnitPrice
       expect(receiptItemsMap.get(givenBarcode)!.discount).toEqual(expectBuyTwoOneFreeDiscount)
     })
   })
@@ -226,7 +226,7 @@ Discounted prices：7.50(yuan)
     it('should generate all receipt item info with total price and discount', () => {
       // given
       const receiptItemsMap = new Map()
-      const receiptItemCoca = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3.00, 2)
+      const receiptItemCoca = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3.00, 3)
       const receiptItemSprite = new ReceiptItem('ITEM000001', 'Sprite', 'bottle', 3.00, 1)
       receiptItemCoca.discount = 3
       receiptItemsMap.set('ITEM000000', receiptItemCoca)
@@ -235,10 +235,10 @@ Discounted prices：7.50(yuan)
       const receipt = generateReceiptPrintInfo(receiptItemsMap)
       // then
       const expectText = `***<store earning no money>Receipt ***
-Name：Coca-Cola，Quantity：2 bottles，Unit：3.00(yuan)，Subtotal：3.00(yuan)
+Name：Coca-Cola，Quantity：3 bottles，Unit：3.00(yuan)，Subtotal：6.00(yuan)
 Name：Sprite，Quantity：1 bottle，Unit：3.00(yuan)，Subtotal：3.00(yuan)
 ----------------------
-Total：6.00(yuan)
+Total：9.00(yuan)
 Discounted prices：3.00(yuan)
 **********************`
       expect(receipt).toEqual(expectText)
