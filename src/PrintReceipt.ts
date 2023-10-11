@@ -61,4 +61,13 @@ export function calculateReceiptItemsDiscount(receiptItemsMap: Map<string, Recei
   })
 }
 
+export function generateReceiptItemPrintInfo(receiptItem: ReceiptItem): string {
+  const unitDescription = receiptItem.quantity > 1 ? receiptItem.unit + 's' : receiptItem.unit
+  const subtotal = receiptItem.quantity * receiptItem.unitPrice - receiptItem.discount
+  return `Name：${receiptItem.name}，` +
+         `Quantity：${receiptItem.quantity} ${unitDescription}，` +
+         `Unit：${receiptItem.unitPrice.toFixed(2)}(yuan)，` +
+         `Subtotal：${subtotal.toFixed(2)}(yuan)`
+}
+
 

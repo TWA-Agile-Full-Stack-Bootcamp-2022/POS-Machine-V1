@@ -1,7 +1,7 @@
 import {
   buildItemsMapWithBarcode,
   calculateDiscountByPromotion, calculateReceiptItemsDiscount,
-  createReceiptItem,
+  createReceiptItem, generateReceiptItemPrintInfo,
   parseReceiptItems,
   printReceipt
 } from '../src/PrintReceipt'
@@ -192,6 +192,21 @@ Discounted prices：7.50(yuan)
       // then
       const expectBuyTwoOneFreeDiscount = Math.floor(givenQuantity/2) * givenUnitPrice
       expect(receiptItemsMap.get(givenBarcode)!.discount).toEqual(expectBuyTwoOneFreeDiscount)
+    })
+  })
+
+  describe('generateReceiptPrintInfo', () => {
+    describe('generateReceiptItemPrintInfo', () => {
+      it('should generate receipt item print info by given receiptItem', () => {
+        // given
+        const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3.00, 2)
+        receiptItem.discount = 3
+        // when
+        const receiptITemPrintInfo = generateReceiptItemPrintInfo(receiptItem)
+        // then
+        const expectText = 'Name：Coca-Cola，Quantity：2 bottles，Unit：3.00(yuan)，Subtotal：3.00(yuan)'
+        expect(receiptITemPrintInfo).toEqual(expectText)
+      })
     })
   })
 })
