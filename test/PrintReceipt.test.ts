@@ -1,6 +1,6 @@
 import {
   buildItemsMapWithBarcode,
-  calculateDiscount,
+  calculateDiscountByPromotion,
   createReceiptItem,
   parseReceiptItems,
   printReceipt
@@ -119,7 +119,7 @@ Discounted prices：7.50(yuan)
   })
 
   describe('calculateReceiptItemsDiscount', () => {
-    describe('calculateDiscount', () => {
+    describe('calculateDiscountByPromotion', () => {
       it('should calculate the discount given item in BUY_TWO_GET_ONE_FREE promotion', () => {
         // given
         const promotions = [
@@ -136,7 +136,7 @@ Discounted prices：7.50(yuan)
         const givenQuantity = 2
         const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', givenPrice, givenQuantity)
         // when
-        const discount = calculateDiscount(receiptItem, promotions)
+        const discount = calculateDiscountByPromotion(receiptItem, promotions)
         // then
         expect(discount).toEqual(Math.floor(givenQuantity/2) * givenPrice)
       })
@@ -154,7 +154,7 @@ Discounted prices：7.50(yuan)
         ]
         const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3, 1)
         // when
-        const discount = calculateDiscount(receiptItem, promotions)
+        const discount = calculateDiscountByPromotion(receiptItem, promotions)
         // then
         expect(discount).toEqual(0)
       })
@@ -173,7 +173,7 @@ Discounted prices：7.50(yuan)
         const givenBarcode = 'ITEM000003'
         const receiptItem = new ReceiptItem(givenBarcode, 'Litchi', 'pound', 5.5, 2)
         // when
-        const discount = calculateDiscount(receiptItem, promotions)
+        const discount = calculateDiscountByPromotion(receiptItem, promotions)
         // then
         expect(discount).toEqual(0)
       })

@@ -46,7 +46,7 @@ export function parseReceiptItems(tags: string[]): Map<string, ReceiptItem>  {
   return receiptItemsMap
 }
 
-export function calculateDiscount(receiptItem: ReceiptItem, promotions: { type: string; barcodes: string[] }[]): number {
+export function calculateDiscountByPromotion(receiptItem: ReceiptItem, promotions: { type: string; barcodes: string[] }[]): number {
   const buyTwoOneFreeBarcodes = promotions.find(promotion => promotion.type === 'BUY_TWO_GET_ONE_FREE')!.barcodes
   if(buyTwoOneFreeBarcodes.find( barcode => receiptItem.barcode === barcode)) {
     return Math.floor(receiptItem.quantity/2) * receiptItem.unitPrice
