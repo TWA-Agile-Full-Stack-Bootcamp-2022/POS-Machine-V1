@@ -1,5 +1,12 @@
-import {buildItemsMapWithBarcode, createReceiptItem, parseReceiptItems, printReceipt} from '../src/PrintReceipt'
+import {
+  buildItemsMapWithBarcode,
+  calculateDiscount,
+  createReceiptItem,
+  parseReceiptItems,
+  printReceipt
+} from '../src/PrintReceipt'
 import { Item } from '../src/Item'
+import { ReceiptItem } from '../src/ReceiptItem'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -47,6 +54,7 @@ Discounted prices：7.50(yuan)
         expect(item!.price).toEqual(3.00)
       })
     })
+
     describe('createReceiptItem', () => {
       it('should create receiptItem by given item and quantity', () => {
         // given
@@ -63,6 +71,7 @@ Discounted prices：7.50(yuan)
         expect(receiptItem!.quantity).toEqual(quantity)
       })
     })
+
     it('should initial the quantity by given multiple same barcodes count', () => {
       // given
       const barcodes = [
@@ -106,6 +115,68 @@ Discounted prices：7.50(yuan)
       const receiptItem = receiptItemsMap.get('ITEM000003')
       expect(receiptItem!.barcode).toEqual('ITEM000003')
       expect(receiptItem!.quantity).toEqual(expectQuantity)
+    })
+  })
+
+  describe('calculateReceiptItemsDiscount', () => {
+    describe('calculateDiscount', () => {
+      it('should calculate the discount given item in BUY_TWO_GET_ONE_FREE promotion', () => {
+        // given
+        const promotions = [
+          {
+            type: 'BUY_TWO_GET_ONE_FREE',
+            barcodes: [
+              'ITEM000000',
+              'ITEM000001',
+              'ITEM000005'
+            ]
+          }
+        ]
+        const givenPrice = 3.0
+        const givenQuantity = 2
+        const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', givenPrice, givenQuantity)
+        // when
+        const discount = calculateDiscount(receiptItem, promotions)
+        // then
+        expect(discount).toEqual(Math.floor(givenQuantity/2) * givenPrice)
+      })
+      it('should return 0 given item in BUY_TWO_GET_ONE_FREE promotion but quantity less than 2', () => {
+        // given
+        const promotions = [
+          {
+            type: 'BUY_TWO_GET_ONE_FREE',
+            barcodes: [
+              'ITEM000000',
+              'ITEM000001',
+              'ITEM000005'
+            ]
+          }
+        ]
+        const receiptItem = new ReceiptItem('ITEM000000', 'Coca-Cola', 'bottle', 3, 1)
+        // when
+        const discount = calculateDiscount(receiptItem, promotions)
+        // then
+        expect(discount).toEqual(0)
+      })
+      it('should return 0 given item NOT in BUY_TWO_GET_ONE_FREE promotion', () => {
+        // given
+        const promotions = [
+          {
+            type: 'BUY_TWO_GET_ONE_FREE',
+            barcodes: [
+              'ITEM000000',
+              'ITEM000001',
+              'ITEM000005'
+            ]
+          }
+        ]
+        const givenBarcode = 'ITEM000003'
+        const receiptItem = new ReceiptItem(givenBarcode, 'Litchi', 'pound', 5.5, 2)
+        // when
+        const discount = calculateDiscount(receiptItem, promotions)
+        // then
+        expect(discount).toEqual(0)
+      })
     })
   })
 })
