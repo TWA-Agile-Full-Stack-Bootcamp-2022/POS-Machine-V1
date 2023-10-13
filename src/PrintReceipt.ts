@@ -53,3 +53,15 @@ export function calculateTotalPrice(tags: Tag[]): Tag[] {
 export function calculateBuyTwoGetOneFreePromotion(tag: Tag) :Tag {
   return {...tag, discount: Math.floor(tag.quantity / 3) * tag.itemInfo!.price}
 }
+
+export function calculateDiscount(tags: Tag[], promotions: Promotion[]): Tag[] {
+
+  return tags.map(tag => {
+    const promotion = promotions.find(promotion => promotion.barcodes.includes(tag.barcode))
+    if (promotion?.type === 'BUY_TWO_GET_ONE_FREE') {
+      return calculateBuyTwoGetOneFreePromotion(tag)
+    }
+
+    return {...tag,discount : 0}
+  })
+}
