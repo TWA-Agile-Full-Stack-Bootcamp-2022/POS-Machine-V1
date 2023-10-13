@@ -1,4 +1,4 @@
-import {printReceipt} from '../src/PrintReceipt'
+import {calculateBuyTwoGetOneFreePromotion, calculateDiscount, calculateQuantity, calculateTotalPrice, checkTags, generateReceipt, printReceipt} from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -24,4 +24,315 @@ Discounted prices：7.50(yuan)
 
     expect(printReceipt(tags)).toEqual(expectText)
   })
+
+  it('should get each tag quantity when given tags', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+
+    expect(calculateQuantity(tags)).toEqual([
+      {barcode: 'ITEM000001', quantity: 5},
+      {barcode: 'ITEM000003', quantity: 2.5},
+      {barcode: 'ITEM000005', quantity: 3}
+    ])
+  })
+
+  it('should get valid tag item when given tags and all items info', () => {
+    const tags = [
+      {barcode: 'ITEM000001', quantity: 5},
+      {barcode: 'ITEM000002', quantity: 3},
+      {barcode: 'NOTINITEM', quantity: 2}
+    ]
+
+    const allItems = [
+      {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      },
+      {
+        barcode: 'ITEM000002',
+        name: 'Apple',
+        unit: 'pound',
+        price: 5.50
+      }
+    ]
+
+    expect(checkTags(tags, allItems)).toEqual([
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ])
+  })
+
+  it('should get total price call calculateTotalPrice when given tags', () => {
+    const tags = [
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ]
+
+    const result = calculateTotalPrice(tags)
+    expect(result).toEqual([
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        totalPrice: 15,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        totalPrice: 16.5,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ])
+  })
+
+  it('should calculate buy two get one free promotion when given tag quantity is 2',  () => {
+    const tag = {
+      barcode: 'ITEM000001',
+      quantity: 2,
+      totalPrice: 6,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    }
+
+    const result = calculateBuyTwoGetOneFreePromotion(tag)
+    expect(result).toEqual({
+      barcode: 'ITEM000001',
+      quantity: 2,
+      totalPrice: 6,
+      discount: 0,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    })
+  })
+
+  it('should calculate buy two get one free promotion when given tag quantity is 3',  () => {
+    const tag = {
+      barcode: 'ITEM000001',
+      quantity: 3,
+      totalPrice: 9,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    }
+
+    const result = calculateBuyTwoGetOneFreePromotion(tag)
+    expect(result).toEqual({
+      barcode: 'ITEM000001',
+      quantity: 3,
+      totalPrice: 9,
+      discount: 3,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    })
+  })
+
+  it('should calculate buy two get one free promotion when given tag quantity is 6',  () => {
+    const tag = {
+      barcode: 'ITEM000001',
+      quantity: 6,
+      totalPrice: 18,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    }
+
+    const result = calculateBuyTwoGetOneFreePromotion(tag)
+    expect(result).toEqual({
+      barcode: 'ITEM000001',
+      quantity: 6,
+      totalPrice: 18,
+      discount: 6,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    })
+  })
+
+  it('should calculate each tag discount when given tags and promotions', () => {
+    const tags = [
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        totalPrice: 15,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        totalPrice: 16.5,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ]
+
+    const promotions = [
+      {
+        type: 'BUY_TWO_GET_ONE_FREE',
+        barcodes: [
+          'ITEM000000',
+          'ITEM000001',
+          'ITEM000005'
+        ]
+      }
+    ]
+
+    const result = calculateDiscount(tags, promotions)
+
+    expect(result).toEqual([
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        totalPrice: 15,
+        discount: 3,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        totalPrice: 16.5,
+        discount: 0,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ])
+
+
+  })
+
+  it('should generate receipt when given tags', () => {
+    const tags = [
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        totalPrice: 15,
+        discount: 3,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        totalPrice: 16.5,
+        discount: 0,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ]
+
+    const result = generateReceipt(tags)
+
+    expect(result).toEqual(`***<store earning no money>Receipt ***
+Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
+Name：Apple，Quantity：3 pounds，Unit：5.50(yuan)，Subtotal：16.50(yuan)
+----------------------
+Total：28.50(yuan)
+Discounted prices：3.00(yuan)
+**********************`)
+
+  })
+
+
 })
