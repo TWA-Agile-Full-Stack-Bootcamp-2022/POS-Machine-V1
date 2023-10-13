@@ -35,3 +35,8 @@ export function calculateQuantity(tags: string[]): Tag[] {
     return {barcode, quantity}
   })
 }
+
+export function checkTags(tags: Tag[], allItems: ReturnType<typeof loadAllItems>): Tag[] {
+  const itemMap = new Map(allItems.map(item => [item.barcode, item]))
+  return tags.map(tag => ({...tag, itemInfo: itemMap.get(tag.barcode)})).filter(tag => tag.itemInfo)
+}
