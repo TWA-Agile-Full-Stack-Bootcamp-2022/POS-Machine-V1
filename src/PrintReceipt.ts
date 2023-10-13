@@ -22,18 +22,11 @@ Discounted prices：7.50(yuan)
 export function calculateQuantity(tags: string[]): Tag[] {
   const quantityMap = tags.reduce((result, tag) => {
     const [barcode, quantity] = tag.split('-')
-    if (result.get(barcode) !== undefined) {
-      result.set(barcode, result.get(barcode)! + (Number(quantity) || 1))
-    } else {
-      result.set(barcode, Number(quantity) || 1)
-    }
-
+    result.set(barcode, (result.get(barcode) || 0) + (Number(quantity) || 1))
     return result
   }, new Map<string, number>())
 
-  return Array.from(quantityMap.entries()).map(([barcode, quantity]) => {
-    return {barcode, quantity}
-  })
+  return Array.from(quantityMap.entries(), ([barcode, quantity]) => ({barcode, quantity}))
 }
 
 export function checkTags(tags: Tag[], allItems: ReturnType<typeof loadAllItems>): Tag[] {
