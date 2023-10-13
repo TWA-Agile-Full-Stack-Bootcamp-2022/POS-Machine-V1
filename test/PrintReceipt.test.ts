@@ -1,4 +1,4 @@
-import {calculateQuantity, calculateTotalPrice, checkTags, printReceipt} from '../src/PrintReceipt'
+import {calculateBuyTwoGetOneFreePromotion, calculateQuantity, calculateTotalPrice, checkTags, printReceipt} from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -140,5 +140,91 @@ Discounted prices：7.50(yuan)
       }
     ])
   })
+
+  it('should calculate buy two get one free promotion when given tag quantity is 2',  () => {
+    const tag = {
+      barcode: 'ITEM000001',
+      quantity: 2,
+      totalPrice: 6,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    }
+
+    const result = calculateBuyTwoGetOneFreePromotion(tag)
+    expect(result).toEqual({
+      barcode: 'ITEM000001',
+      quantity: 2,
+      totalPrice: 6,
+      discount: 0,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    })
+  })
+
+  it('should calculate buy two get one free promotion when given tag quantity is 3',  () => {
+    const tag = {
+      barcode: 'ITEM000001',
+      quantity: 3,
+      totalPrice: 9,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    }
+
+    const result = calculateBuyTwoGetOneFreePromotion(tag)
+    expect(result).toEqual({
+      barcode: 'ITEM000001',
+      quantity: 3,
+      totalPrice: 9,
+      discount: 3,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    })
+  })
+
+  it('should calculate buy two get one free promotion when given tag quantity is 6',  () => {
+    const tag = {
+      barcode: 'ITEM000001',
+      quantity: 6,
+      totalPrice: 18,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    }
+
+    const result = calculateBuyTwoGetOneFreePromotion(tag)
+    expect(result).toEqual({
+      barcode: 'ITEM000001',
+      quantity: 6,
+      totalPrice: 18,
+      discount: 6,
+      itemInfo: {
+        barcode: 'ITEM000001',
+        name: 'Sprite',
+        unit: 'bottle',
+        price: 3.00
+      }
+    })
+  })
+
+
 
 })

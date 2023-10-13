@@ -1,4 +1,3 @@
-import { type } from 'os'
 import {loadAllItems, loadPromotions} from './Dependencies'
 
 type Item = {
@@ -49,4 +48,8 @@ export function checkTags(tags: Tag[], allItems: Item[]): Tag[] {
 
 export function calculateTotalPrice(tags: Tag[]): Tag[] {
   return tags.map(tag => ({...tag, totalPrice: tag.itemInfo!.price * tag.quantity}))
+}
+
+export function calculateBuyTwoGetOneFreePromotion(tag: Tag) :Tag {
+  return {...tag, discount: Math.floor(tag.quantity / 3) * tag.itemInfo!.price}
 }
