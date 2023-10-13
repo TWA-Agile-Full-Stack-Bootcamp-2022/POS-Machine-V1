@@ -1,4 +1,4 @@
-import {calculateQuantity, checkTags, printReceipt} from '../src/PrintReceipt'
+import {calculateQuantity, calculateTotalPrice, checkTags, printReceipt} from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -80,6 +80,57 @@ Discounted prices：7.50(yuan)
       {
         barcode: 'ITEM000002',
         quantity: 3,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ])
+  })
+
+  it('should get total price call calculateTotalPrice when given tags', () => {
+    const tags = [
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ]
+
+    const result = calculateTotalPrice(tags)
+    expect(result).toEqual([
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        totalPrice: 15,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        totalPrice: 16.5,
         itemInfo: {
           barcode: 'ITEM000002',
           name: 'Apple',

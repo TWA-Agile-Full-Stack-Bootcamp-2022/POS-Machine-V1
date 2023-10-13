@@ -33,3 +33,7 @@ export function checkTags(tags: Tag[], allItems: ReturnType<typeof loadAllItems>
   const itemMap = new Map(allItems.map(item => [item.barcode, item]))
   return tags.map(tag => ({...tag, itemInfo: itemMap.get(tag.barcode)})).filter(tag => tag.itemInfo)
 }
+
+export function calculateTotalPrice(tags: Tag[]): Tag[] {
+  return tags.map(tag => ({...tag, totalPrice: tag.itemInfo!.price * tag.quantity}))
+}
