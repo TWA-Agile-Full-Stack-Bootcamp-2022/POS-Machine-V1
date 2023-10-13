@@ -1,4 +1,4 @@
-import {calculateBuyTwoGetOneFreePromotion, calculateDiscount, calculateQuantity, calculateTotalPrice, checkTags, printReceipt} from '../src/PrintReceipt'
+import {calculateBuyTwoGetOneFreePromotion, calculateDiscount, calculateQuantity, calculateTotalPrice, checkTags, generateReceipt, printReceipt} from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -293,5 +293,46 @@ Discounted prices：7.50(yuan)
 
 
   })
+
+  it('should generate receipt when given tags', () => {
+    const tags = [
+      {
+        barcode: 'ITEM000001',
+        quantity: 5,
+        totalPrice: 15,
+        discount: 3,
+        itemInfo: {
+          barcode: 'ITEM000001',
+          name: 'Sprite',
+          unit: 'bottle',
+          price: 3.00
+        }
+      },
+      {
+        barcode: 'ITEM000002',
+        quantity: 3,
+        totalPrice: 16.5,
+        discount: 0,
+        itemInfo: {
+          barcode: 'ITEM000002',
+          name: 'Apple',
+          unit: 'pound',
+          price: 5.50
+        }
+      }
+    ]
+
+    const result = generateReceipt(tags)
+
+    expect(result).toEqual(`***<store earning no money>Receipt ***
+Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
+Name：Apple，Quantity：3 pounds，Unit：5.50(yuan)，Subtotal：16.50(yuan)
+----------------------
+Total：28.50(yuan)
+Discounted prices：3.00(yuan)
+**********************`)
+
+  })
+
 
 })

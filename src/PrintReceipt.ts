@@ -65,3 +65,15 @@ export function calculateDiscount(tags: Tag[], promotions: Promotion[]): Tag[] {
     return {...tag,discount : 0}
   })
 }
+
+export function generateReceipt(tags: Tag[]): string {
+  let receipt = '***<store earning no money>Receipt ***\n'
+  tags.forEach(tag => {
+    receipt += `Name：${tag.itemInfo!.name}，Quantity：${tag.quantity} ${tag.itemInfo!.unit}s，Unit：${tag.itemInfo!.price.toFixed(2)}(yuan)，Subtotal：${(tag.totalPrice! - tag.discount!).toFixed(2)}(yuan)\n`
+  })
+  receipt += '----------------------\n'
+  receipt += `Total：${tags.reduce((result, tag) => result + tag.totalPrice! - tag.discount!, 0).toFixed(2)}(yuan)\n`
+  receipt += `Discounted prices：${tags.reduce((result, tag) => result + tag.discount!, 0).toFixed(2)}(yuan)\n`
+  receipt += '**********************'
+  return receipt
+}
