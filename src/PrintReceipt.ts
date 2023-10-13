@@ -1,9 +1,22 @@
+import { type } from 'os'
 import {loadAllItems, loadPromotions} from './Dependencies'
+
+type Item = {
+  barcode: string
+  name: string
+  unit: string
+  price: number
+}
+
+type Promotion = {
+  type: string
+  barcodes: string[]
+}
 
 type Tag = {
   barcode: string
   quantity: number
-  itemInfo?: ReturnType<typeof loadAllItems>[0]
+  itemInfo?: Item
   totalPrice?: number
   discount?: number
 }
@@ -29,7 +42,7 @@ export function calculateQuantity(tags: string[]): Tag[] {
   return Array.from(quantityMap.entries(), ([barcode, quantity]) => ({barcode, quantity}))
 }
 
-export function checkTags(tags: Tag[], allItems: ReturnType<typeof loadAllItems>): Tag[] {
+export function checkTags(tags: Tag[], allItems: Item[]): Tag[] {
   const itemMap = new Map(allItems.map(item => [item.barcode, item]))
   return tags.map(tag => ({...tag, itemInfo: itemMap.get(tag.barcode)})).filter(tag => tag.itemInfo)
 }
