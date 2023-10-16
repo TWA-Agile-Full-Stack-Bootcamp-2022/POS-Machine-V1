@@ -1,4 +1,5 @@
 import {printReceipt} from '../src/PrintReceipt'
+import { ReceiptLine } from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -24,4 +25,20 @@ Discounted prices：7.50(yuan)
 
     expect(printReceipt(tags)).toEqual(expectText)
   })
+
+  it('6 chair should get 20 discount',()=>{
+
+    const line = new ReceiptLine('ITEM000001','chair',10,6)
+
+    const discount = line.getDiscount()
+
+    expect(discount).toBe(20)
+  })
+
+  it('total price for 6 chairs should be 40',()=>{
+    const line = new ReceiptLine('ITEM000001','chair',10,6)
+    const subTotal = line.getSubTotalPrice()
+    expect(subTotal).toBe(40)
+  })
+
 })

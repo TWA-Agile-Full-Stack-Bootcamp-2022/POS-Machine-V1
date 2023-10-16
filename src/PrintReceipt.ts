@@ -10,3 +10,35 @@ Total：58.50(yuan)
 Discounted prices：7.50(yuan)
 **********************`
 }
+
+
+
+export class ReceiptLine{
+  barcode:string
+  name:string
+  price:number
+  quantity:number
+  constructor(barcode:string,name:string,price:number,quantity:number){
+    this.barcode=barcode
+    this.name=name
+    this.price=price
+    this.quantity=quantity
+  }
+
+  public getDiscount():number{
+    let discount=0
+    const promotions = loadPromotions()
+    promotions.forEach((promotion)=>{
+      if(promotion.type==='BUY_TWO_GET_ONE_FREE'){
+        if(promotion.barcodes.includes(this.barcode)){
+          discount+=Math.floor(this.quantity/3)*this.price
+        }
+      }
+    })
+    return discount
+  }
+
+  public getSubTotalPrice():number{
+    return this.price*this.quantity-this.getDiscount()
+  }
+}
