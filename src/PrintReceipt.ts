@@ -1,4 +1,31 @@
-import {loadAllItems, loadPromotions} from './Dependencies'
+import { loadAllItems, loadPromotions } from './Dependencies'
+
+
+export function calulateQuantity(tags: string[]): Map<string,number> {
+  const barcodeQuantity = new Map()
+  tags.forEach((tag)=>{
+    let barcode:string
+    let quantity:number
+    const index = tag.indexOf('-')
+    if(index===-1){
+      barcode=tag
+      quantity=1
+    }else{
+      barcode=tag.substring(0,index)
+      quantity= Number(tag.substring(index+1,tag.length))
+    }
+    if(barcodeQuantity.has(barcode)){
+      const hasQuantity = barcodeQuantity.get(barcode)
+      barcodeQuantity.set(barcode,hasQuantity+quantity)
+    }else{
+      barcodeQuantity.set(barcode,quantity)
+    }
+  })
+  return barcodeQuantity
+}
+
+
+
 
 export function printReceipt(tags: string[]): string {
   return `***<store earning no money>Receipt ***
@@ -13,32 +40,32 @@ Discounted prices：7.50(yuan)
 
 
 
-export class ReceiptLine{
-  barcode:string
-  name:string
-  price:number
-  quantity:number
-  constructor(barcode:string,name:string,price:number,quantity:number){
-    this.barcode=barcode
-    this.name=name
-    this.price=price
-    this.quantity=quantity
+export class ReceiptLine {
+  barcode: string
+  name: string
+  price: number
+  quantity: number
+  constructor(barcode: string, name: string, price: number, quantity: number) {
+    this.barcode = barcode
+    this.name = name
+    this.price = price
+    this.quantity = quantity
   }
 
-  public getDiscount():number{
-    let discount=0
+  public getDiscount(): number {
+    let discount = 0
     const promotions = loadPromotions()
-    promotions.forEach((promotion)=>{
-      if(promotion.type==='BUY_TWO_GET_ONE_FREE'){
-        if(promotion.barcodes.includes(this.barcode)){
-          discount+=Math.floor(this.quantity/3)*this.price
+    promotions.forEach((promotion) => {
+      if (promotion.type === 'BUY_TWO_GET_ONE_FREE') {
+        if (promotion.barcodes.includes(this.barcode)) {
+          discount += Math.floor(this.quantity / 3) * this.price
         }
       }
     })
     return discount
   }
 
-  public getSubTotalPrice():number{
-    return this.price*this.quantity-this.getDiscount()
+  public getSubTotalPrice(): number {
+    return this.price * this.quantity - this.getDiscount()
   }
 }

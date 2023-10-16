@@ -1,4 +1,4 @@
-import {printReceipt} from '../src/PrintReceipt'
+import {printReceipt,calulateQuantity as caculateQuantity} from '../src/PrintReceipt'
 import { ReceiptLine } from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
@@ -39,6 +39,23 @@ Discounted prices：7.50(yuan)
     const line = new ReceiptLine('ITEM000001','chair',10,6)
     const subTotal = line.getSubTotalPrice()
     expect(subTotal).toBe(40)
+  })
+
+  it('should get proper quantity',()=>{
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+    const map = caculateQuantity(tags)
+    expect(map.get('ITEM000001')).toBe(5)
+    expect(map.get('ITEM000003')).toBe(2.5)
+    expect(map.get('ITEM000005')).toBe(3)
   })
 
 })
