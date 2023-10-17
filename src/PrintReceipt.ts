@@ -1,30 +1,40 @@
 import { loadAllItems, loadPromotions } from './Dependencies'
 
 
-export function calulateQuantity(tags: string[]): Map<string,number> {
+export function calulateQuantity(tags: string[]): Map<string, number> {
   const barcodeQuantity = new Map()
-  tags.forEach((tag)=>{
-    let barcode:string
-    let quantity:number
+  tags.forEach((tag) => {
+    let barcode: string
+    let quantity: number
     const index = tag.indexOf('-')
-    if(index===-1){
-      barcode=tag
-      quantity=1
-    }else{
-      barcode=tag.substring(0,index)
-      quantity= Number(tag.substring(index+1,tag.length))
+    if (index === -1) {
+      barcode = tag
+      quantity = 1
+    } else {
+      barcode = tag.substring(0, index)
+      quantity = Number(tag.substring(index + 1, tag.length))
     }
-    if(barcodeQuantity.has(barcode)){
+    if (barcodeQuantity.has(barcode)) {
       const hasQuantity = barcodeQuantity.get(barcode)
-      barcodeQuantity.set(barcode,hasQuantity+quantity)
-    }else{
-      barcodeQuantity.set(barcode,quantity)
+      barcodeQuantity.set(barcode, hasQuantity + quantity)
+    } else {
+      barcodeQuantity.set(barcode, quantity)
     }
   })
   return barcodeQuantity
 }
 
 
+export function loadReceiptLineInfo(barcodeQuantity: Map<string, number>): ReceiptLine[] {
+  const receiptLines: ReceiptLine[] = []
+  loadAllItems().forEach((item)=>{
+    if(barcodeQuantity.has(item.barcode)){
+      const receiptLine = new ReceiptLine(item.barcode,item.name,item.price,barcodeQuantity.get(item.barcode)!)
+      receiptLines.push(receiptLine)
+    }
+  })
+  return receiptLines
+}
 
 
 export function printReceipt(tags: string[]): string {

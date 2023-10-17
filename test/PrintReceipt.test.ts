@@ -1,4 +1,4 @@
-import {printReceipt,calulateQuantity as caculateQuantity} from '../src/PrintReceipt'
+import {printReceipt,calulateQuantity as caculateQuantity, loadReceiptLineInfo} from '../src/PrintReceipt'
 import { ReceiptLine } from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
@@ -56,6 +56,22 @@ Discounted prices：7.50(yuan)
     expect(map.get('ITEM000001')).toBe(5)
     expect(map.get('ITEM000003')).toBe(2.5)
     expect(map.get('ITEM000005')).toBe(3)
+  })
+
+  it('should load all receiptline',()=>{
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+    const map = caculateQuantity(tags)
+    const lines = loadReceiptLineInfo(map)
+    expect(lines).toHaveLength(3)
   })
 
 })
