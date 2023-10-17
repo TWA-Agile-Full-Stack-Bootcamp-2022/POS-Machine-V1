@@ -27,17 +27,37 @@ export function calulateQuantity(tags: string[]): Map<string, number> {
 
 export function loadReceiptLineInfo(barcodeQuantity: Map<string, number>): ReceiptLine[] {
   const receiptLines: ReceiptLine[] = []
-  loadAllItems().forEach((item)=>{
-    if(barcodeQuantity.has(item.barcode)){
-      const receiptLine = new ReceiptLine(item.barcode,item.name,item.price,barcodeQuantity.get(item.barcode)!)
+  loadAllItems().forEach((item) => {
+    if (barcodeQuantity.has(item.barcode)) {
+      const receiptLine = new ReceiptLine(item.barcode, item.name, item.price, barcodeQuantity.get(item.barcode)!,item.unit)
       receiptLines.push(receiptLine)
     }
   })
   return receiptLines
 }
 
-
 export function printReceipt(tags: string[]): string {
+  let result = '***<store earning no money>Receipt ***\n'
+  const barcodeQuantity = calulateQuantity(tags)
+  const receiptLines = loadReceiptLineInfo(barcodeQuantity)
+  let total = 0.00
+  let discount = 0.00
+  receiptLines.forEach((line) => {
+    result += 'Name：' + line.name + '，Quantity：' + line.quantity + ' '+line.unit+'s，Unit：' + line.price.toFixed(2) + '(yuan)，Subtotal：' + line.getSubTotalPrice().toFixed(2) + '(yuan)\n'
+    total += line.getSubTotalPrice()
+    discount += line.getDiscount()
+  })
+
+
+  result += '----------------------\n'
+  result += 'Total：' + total.toFixed(2) + '(yuan)\n'
+  result += 'Discounted prices：' + discount.toFixed(2) + '(yuan)\n'
+  result += '**********************'
+  return result
+}
+
+
+export function printReceipt1(tags: string[]): string {
   return `***<store earning no money>Receipt ***
 Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
 Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)
@@ -55,11 +75,13 @@ export class ReceiptLine {
   name: string
   price: number
   quantity: number
-  constructor(barcode: string, name: string, price: number, quantity: number) {
+  unit: string
+  constructor(barcode: string, name: string, price: number, quantity: number, unit: string) {
     this.barcode = barcode
     this.name = name
     this.price = price
     this.quantity = quantity
+    this.unit = unit
   }
 
   public getDiscount(): number {

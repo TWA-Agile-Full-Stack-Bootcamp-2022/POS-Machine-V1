@@ -28,7 +28,7 @@ Discounted prices：7.50(yuan)
 
   it('6 chair should get 20 discount',()=>{
 
-    const line = new ReceiptLine('ITEM000001','chair',10,6)
+    const line = new ReceiptLine('ITEM000001','chair',10,6,'bar')
 
     const discount = line.getDiscount()
 
@@ -36,7 +36,7 @@ Discounted prices：7.50(yuan)
   })
 
   it('total price for 6 chairs should be 40',()=>{
-    const line = new ReceiptLine('ITEM000001','chair',10,6)
+    const line = new ReceiptLine('ITEM000001','chair',10,6,'bar')
     const subTotal = line.getSubTotalPrice()
     expect(subTotal).toBe(40)
   })
